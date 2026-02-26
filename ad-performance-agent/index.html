@@ -46,7 +46,6 @@
 
   .main-layout { display: grid; grid-template-columns: 1fr 360px; flex: 1; overflow: hidden; }
 
-  /* ── Slack Panel (Left) ── */
   .slack-panel { display: flex; flex-direction: column; background: var(--slack-bg); border-right: 1px solid var(--slack-border); overflow: hidden; }
   .slack-header { background: var(--slack-bg); border-bottom: 1px solid var(--slack-border); padding: 12px 20px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .channel-icon { color: var(--slack-muted); font-size: 16px; }
@@ -68,19 +67,9 @@
   .bot-badge { background: #1a3a5c; color: #5e99d4; font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
   .msg-time { font-size: 11px; color: var(--slack-muted); }
   .msg-text { font-size: 14px; line-height: 1.55; color: var(--slack-text); }
-  .msg-text strong { color: var(--slack-white); }
-  .msg-text code { background: #2d2f33; padding: 1px 5px; border-radius: 3px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #e07b9a; }
   .mention { color: #5e99d4; background: rgba(94,153,212,.1); border-radius: 3px; padding: 0 2px; }
 
-  .msg-reactions { display: flex; gap: 6px; margin-top: 6px; }
-  .reaction { background: rgba(94,153,212,.08); border: 1px solid rgba(94,153,212,.2); border-radius: 12px; padding: 2px 8px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
-  .reaction-count { font-size: 11px; color: var(--slack-link); font-weight: 600; }
-
   .perf-report { background: var(--slack-channel-bg); border: 1px solid var(--slack-border); border-radius: 8px; padding: 14px 16px; margin-top: 6px; font-size: 13px; line-height: 1.65; }
-  .perf-report.report-warn { border-left: 3px solid var(--agent-orange); }
-  .perf-report.report-crit { border-left: 3px solid var(--agent-red); }
-  .perf-report.report-ai { border-left: 3px solid var(--agent-purple); }
-  .perf-report.report-ok { border-left: 3px solid var(--slack-green); }
   .report-header { font-weight: 700; font-size: 14px; color: var(--slack-white); margin-bottom: 2px; }
   .report-sub { font-size: 11px; color: var(--slack-muted); margin-bottom: 8px; }
   .report-divider { border: none; border-top: 1px solid var(--slack-border); margin: 9px 0; }
@@ -98,12 +87,9 @@
   .channel-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
   .callout-row { display: flex; gap: 7px; margin-bottom: 5px; font-size: 13px; line-height: 1.5; }
   .action-block { background: rgba(94,153,212,.07); border-left: 2px solid #5e99d4; padding: 6px 10px; border-radius: 0 4px 4px 0; margin-bottom: 5px; font-size: 12.5px; }
-  .action-block.action-urgent { border-left-color: var(--agent-red); }
-  .action-block.action-warn { border-left-color: var(--agent-orange); }
   .action-lbl { font-size: 9px; font-weight: 700; color: #5e99d4; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
-  .action-lbl.lbl-urgent { color: var(--agent-red); }
-  .action-lbl.lbl-warn { color: var(--agent-orange); }
   .bottom-line { background: rgba(43,172,118,.08); border: 1px solid rgba(43,172,118,.2); border-radius: 6px; padding: 8px 12px; font-size: 13px; margin-top: 8px; }
+  .not-found { background: rgba(224,123,45,.08); border: 1px solid rgba(224,123,45,.25); border-radius: 8px; padding: 12px 14px; margin-top: 6px; font-size: 13px; display: flex; gap: 10px; }
 
   .typing-indicator { display: flex; align-items: center; gap: 8px; padding: 6px 20px; font-size: 12px; color: var(--slack-muted); opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
   .typing-indicator.visible { opacity: 1; }
@@ -115,7 +101,6 @@
   .slack-input-bar { background: var(--slack-bg); border-top: 1px solid var(--slack-border); padding: 12px 20px; flex-shrink: 0; }
   .slack-input { background: var(--slack-input-bg); border: 1px solid var(--slack-border); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--slack-muted); }
 
-  /* ── Agent Panel (Right) ── */
   .agent-panel { background: var(--agent-bg); display: flex; flex-direction: column; overflow: hidden; font-family: 'IBM Plex Mono', monospace; }
   .agent-header { padding: 13px 16px; border-bottom: 1px solid var(--agent-border); flex-shrink: 0; }
   .agent-title { font-size: 11px; font-weight: 600; color: var(--agent-blue); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
@@ -129,23 +114,19 @@
   .step-header { padding: 7px 10px; display: flex; align-items: center; gap: 8px; }
   .step-num { width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
   .sn-done { background: rgba(63,185,80,.1); color: var(--agent-green); border: 1px solid rgba(63,185,80,.3); }
-  .sn-warn { background: rgba(227,179,65,.1); color: var(--agent-orange); border: 1px solid rgba(227,179,65,.3); }
   .sn-error { background: rgba(248,81,73,.1); color: var(--agent-red); border: 1px solid rgba(248,81,73,.3); }
   .step-lbl { font-size: 11px; color: var(--agent-text); font-weight: 500; flex: 1; }
   .step-t { font-size: 9px; color: var(--agent-green); }
-  .step-t.t-warn { color: var(--agent-orange); }
-  .step-t.t-err { color: var(--agent-red); }
   .step-body { padding: 0 10px 8px 35px; font-size: 10px; line-height: 1.6; }
   .sd { color: #555; }
   .sd.hi { color: var(--agent-purple); }
   .sd.ok { color: var(--agent-green); }
-  .sd.wr { color: var(--agent-orange); }
   .sd.er { color: var(--agent-red); }
 
   .agent-divider { border: none; border-top: 1px solid var(--agent-border); margin: 10px 0 8px; }
-  .phase-badge { background: #0d1117; border: 1px solid var(--agent-border); border-radius: 4px; padding: 6px 10px; font-size: 10px; margin-bottom: 8px; }
-  .pb-label { color: var(--agent-purple); margin-bottom: 2px; }
-  .pb-text { color: #666; line-height: 1.4; }
+  .query-badge { background: #0d1117; border: 1px solid var(--agent-border); border-radius: 4px; padding: 6px 10px; font-size: 10px; margin-bottom: 8px; }
+  .qb-label { color: var(--agent-purple); margin-bottom: 2px; }
+  .qb-text { color: #666; line-height: 1.4; }
 
   .status-bar { background: var(--tf-red); padding: 4px 20px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,.65); display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
   .status-bar span { color: white; }
@@ -157,8 +138,7 @@
   <div class="brand">THINKFLOW<span>/</span>AD PERFORMANCE AGENT</div>
   <button class="ctrl-btn primary" id="playBtn" onclick="togglePlay()">&#9654; Play Demo</button>
   <button class="ctrl-btn" onclick="stepForward()">+1 Step</button>
-  <button class="ctrl-btn" onclick="skipToAlert()">Skip to Alert &#8594;</button>
-  <button class="ctrl-btn" onclick="skipToResolution()">Resolution &#8594;</button>
+  <button class="ctrl-btn" onclick="skipQuery()">Skip Query &#8594;</button>
   <button class="ctrl-btn" onclick="resetDemo()">&#8634; Reset</button>
   <div class="state-display">
     <div class="state-dot" id="stateDot"></div>
@@ -176,7 +156,7 @@
     <div class="slack-messages" id="slackMessages"></div>
     <div class="typing-indicator" id="typingEl">
       <div class="typing-dots"><span></span><span></span><span></span></div>
-      <span>ThinkFlow Agent is analyzing...</span>
+      <span>Ad Performance Agent is analyzing...</span>
     </div>
     <div class="slack-input-bar">
       <div class="slack-input">&#128172; Message #ad-performance-alerts</div>
@@ -193,270 +173,129 @@
 </div>
 
 <div class="status-bar">
-  ThinkFlow Intelligence &nbsp;&middot;&nbsp; Model: <span>claude-opus-4-6</span> &nbsp;&middot;&nbsp; Platforms: <span>Meta Ads + Google Ads</span> &nbsp;&middot;&nbsp; Accounts: <span>3 monitored</span> &nbsp;&middot;&nbsp; Status: <span id="engineStatus">Idle</span>
+  ThinkFlow Intelligence &nbsp;&middot;&nbsp; Model: <span>claude-opus-4-6</span> &nbsp;&middot;&nbsp; Platforms: <span>Meta Ads + Google Ads</span> &nbsp;&middot;&nbsp; Status: <span id="engineStatus">Idle</span>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// SIMULATION DATA — 8 phases, each with agent steps + slack message
-// ═══════════════════════════════════════════════════════
-
-const PHASES = [
-  // ── Phase 0: Daily Digest ──
+const SCENARIOS = [
   {
-    label: "SCHEDULED DAILY DIGEST",
-    desc: "8:00 AM — Automated morning sync",
+    q: { author:"Alex Lehman", init:"AL", color:"#7c3aed", time:"9:02 AM", text:'<span class="mention">@Ad Performance Agent</span> how is Apex Roofing performing over the last 14 days?' },
     steps: [
-      { lbl:"Cron trigger — daily digest", t:"0.0s", cls:"done", details:["schedule: 0 8 * * *","trigger: automated"], hi:false },
-      { lbl:"Syncing Meta Ads API", t:"1.2s", cls:"done", details:["accounts: 2 (Apex Roofing, Ironclad HVAC)","campaigns: 14 active","rows fetched: 286"], hi:false },
-      { lbl:"Syncing Google Ads API", t:"0.9s", cls:"done", details:["accounts: 2 (Vela Skincare, Ironclad HVAC)","campaigns: 11 active","rows fetched: 201"], hi:false },
-      { lbl:"Running threshold checks", t:"0.3s", cls:"done", details:["CPA thresholds: all pass ✓","ROAS thresholds: all pass ✓","CTR thresholds: all pass ✓","budget pacing: all on track ✓"], hi:true },
-      { lbl:"Generating digest via Claude", t:"2.4s", cls:"done", details:["model: claude-opus-4-6","tokens in: 1,480","tokens out: 420","status: all healthy ✓"], hi:true },
-      { lbl:"Posting to #ad-performance-alerts", t:"0.2s", cls:"done", details:["message delivered ✓","channel: #ad-performance-alerts"], hi:false },
+      { lbl:"Webhook received from Slack", t:"0.1s", details:["event: app_mention","channel: #ad-performance-alerts","user: alex.lehman"], err:false, hi:false },
+      { lbl:"Extracting intent via Claude", t:"1.2s", details:['client: "Apex Roofing"',"days: 14","platform: meta ads"], err:false, hi:true },
+      { lbl:"Account ID lookup — Google Sheets", t:"0.3s", details:["match found ✓","meta_id: act_9920174","budget: $5,000/mo"], err:false, hi:false },
+      { lbl:"Fetching Meta Ads data", t:"0.8s", details:["6 campaigns active","date_range: last 14d","142 rows returned"], err:false, hi:false },
+      { lbl:"Generating AI analysis", t:"3.1s", details:["model: claude-opus-4-6","tokens in: 1,847","tokens out: 612","analysis complete ✓"], err:false, hi:true },
+      { lbl:"Posting response to Slack", t:"0.2s", details:["thread_ts matched","message delivered ✓"], err:false, hi:false }
     ],
-    slack: {
-      time: "8:02 AM",
-      html: `<div class="perf-report">
-        <div class="report-header">&#128202; Daily Performance Digest</div>
-        <div class="report-sub">Tuesday 8:00 AM &middot; All accounts synced &middot; ThinkFlow Ad Performance Agent</div>
-        <hr class="report-divider">
-        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px">Good morning! All <strong>3 client accounts</strong> are performing within target thresholds.</div>
-        <hr class="report-divider">
-        <div class="section-title">Account Summary</div>
-        <div class="channel-grid">
-          <div class="channel-box">
-            <div class="channel-label"><span class="channel-dot" style="background:#1877f2"></span>APEX ROOFING</div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">Platform</span><span class="metric-value" style="font-size:12px">Meta Ads</span></div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">ROAS</span><span class="metric-value" style="font-size:12px">3.2x</span></div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CPA</span><span class="metric-value" style="font-size:12px">$38</span></div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CTR</span><span class="metric-value" style="font-size:12px">2.4%</span></div>
-            <span class="mtag mtag-good" style="margin-top:4px;display:inline-block">&#9679; Healthy</span>
-          </div>
-          <div class="channel-box">
-            <div class="channel-label"><span class="channel-dot" style="background:#4285f4"></span>VELA SKINCARE</div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">Platform</span><span class="metric-value" style="font-size:12px">Google Ads</span></div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">ROAS</span><span class="metric-value" style="font-size:12px">4.1x</span></div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CPA</span><span class="metric-value" style="font-size:12px">$29</span></div>
-            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CTR</span><span class="metric-value" style="font-size:12px">3.1%</span></div>
-            <span class="mtag mtag-good" style="margin-top:4px;display:inline-block">&#9679; Healthy</span>
-          </div>
-        </div>
-        <div class="channel-grid" style="grid-template-columns:1fr">
-          <div class="channel-box">
-            <div class="channel-label"><span class="channel-dot" style="background:#16a34a"></span>IRONCLAD HVAC</div>
-            <div style="display:flex;gap:16px;flex-wrap:wrap">
-              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">Platforms</span><span class="metric-value" style="font-size:12px">Meta + Google</span></div>
-              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">ROAS</span><span class="metric-value" style="font-size:12px">3.6x</span></div>
-              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CPA</span><span class="metric-value" style="font-size:12px">$42</span></div>
-              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CTR</span><span class="metric-value" style="font-size:12px">2.2%</span></div>
-            </div>
-            <span class="mtag mtag-good" style="margin-top:4px;display:inline-block">&#9679; Healthy</span>
-          </div>
-        </div>
-        <hr class="report-divider">
-        <div style="font-size:12px;color:#2bac76">&#128994; No anomalies detected. All budgets on pace. Next check in 2 hours.</div>
-      </div>`,
-      reactions: [{e:"&#128077;",c:3},{e:"&#9749;",c:2}]
+    resp: {
+      type:"full", client:"Apex Roofing", days:14,
+      health:"Strong performance across the board. Meta Ads ROAS is holding at 3.2x with a healthy $38 CPA — well within the $50 target. Budget is pacing on track at 47% through the month.",
+      topline:[{l:"Total Spend",v:"$2,340",tag:null},{l:"Conversions",v:"62",tag:null},{l:"ROAS",v:"3.2x",tag:"good"},{l:"CPA",v:"$38",tag:"good"},{l:"CTR",v:"2.4%",tag:"good"}],
+      meta:{spend:"$2,340",roas:"3.2x",cpa:"$38",ctr:"2.4%",conv:"62",tag:"good"},
+      google:null,
+      callouts:[
+        {i:"🟢",t:'Top ad set <strong>"Roof Repair - Homeowners 35-65"</strong> driving 58% of conversions at a $34 CPA — strongest performer in the account.'},
+        {i:"🟢",t:"Frequency at 2.1x across all ad sets — well below the 3.0x fatigue threshold."},
+        {i:"🟡",t:'Ad set "Storm Season - Emergency" has high CTR (2.9%) but only 12% of budget. Scaling opportunity exists.'}
+      ],
+      actions:[
+        {lbl:"This Week",t:'Increase budget allocation to "Storm Season - Emergency" by $300/week — CPA and CTR support the scale.'},
+        {lbl:"Monitor",t:"Watch frequency on the Homeowners ad set. If it crosses 3.0x in the next 7 days, begin creative refresh."},
+        {lbl:"Next Sprint",t:"Test 2–3 new video creatives (UGC testimonial format) to build a pipeline before the top set fatigues."}
+      ],
+      bl:"Apex Roofing is performing well. No immediate action required — the reallocation to Storm Season is the main upside opportunity this week."
     }
   },
-
-  // ── Phase 1: Apex CPA spike detected ──
   {
-    label: "ANOMALY DETECTION — APEX ROOFING",
-    desc: "10:14 AM — Mid-morning monitoring cycle",
+    q: { author:"Jordan Park", init:"JP", color:"#0891b2", time:"9:31 AM", text:'<span class="mention">@Ad Performance Agent</span> pull up Vela Skincare last 30 days' },
     steps: [
-      { lbl:"Scheduled monitoring check", t:"0.0s", cls:"done", details:["trigger: every 2 hours","cycle: mid-morning"], hi:false },
-      { lbl:"Syncing Apex Roofing — Meta Ads", t:"0.8s", cls:"done", details:["campaigns: 6 active","spend since 8AM: +$550","rows: 94"], hi:false },
-      { lbl:"Running threshold comparison", t:"0.2s", cls:"warn", details:["CPA: $56.00 vs $38.00 target → +47% ⚠","ROAS: 2.1x vs 2.5x floor → BREACH ⚠","CTR: 1.6% vs 2.0% baseline → -33% ⚠"], hi:true },
-      { lbl:"Anomaly confirmed — severity: WARNING", t:"0.1s", cls:"warn", details:["account: Apex Roofing","threshold breaches: 3","escalation level: warning"], hi:false },
+      { lbl:"Webhook received from Slack", t:"0.1s", details:["event: app_mention","user: jordan.park"], err:false, hi:false },
+      { lbl:"Extracting intent via Claude", t:"1.4s", details:['client: "Vela Skincare"',"days: 30","platform: google ads"], err:false, hi:true },
+      { lbl:"Account ID lookup — Google Sheets", t:"0.2s", details:["match found ✓","google_id: 2291847563","budget: $12,000/mo"], err:false, hi:false },
+      { lbl:"Fetching Google Ads data", t:"0.9s", details:["8 campaigns active","date_range: last 30d","318 rows returned"], err:false, hi:false },
+      { lbl:"Generating AI analysis", t:"3.8s", details:["model: claude-opus-4-6","tokens in: 2,210","tokens out: 698","flagging underperformance ⚠"], err:false, hi:true },
+      { lbl:"Posting response to Slack", t:"0.2s", details:["thread_ts matched","message delivered ✓"], err:false, hi:false }
     ],
-    slack: null // no slack message yet — just agent detection
-  },
-
-  // ── Phase 2: Anomaly alert posted to Slack ──
-  {
-    label: "POSTING ANOMALY ALERT",
-    desc: "10:15 AM — Alert dispatched to Slack",
-    steps: [
-      { lbl:"Composing alert message", t:"0.3s", cls:"done", details:["severity: warning","metrics attached: CPA, ROAS, CTR, spend","format: structured block"], hi:false },
-      { lbl:"Posting to #ad-performance-alerts", t:"0.2s", cls:"done", details:["message delivered ✓","reactions enabled"], hi:false },
-      { lbl:"Triggering AI root cause analysis", t:"0.1s", cls:"done", details:["queuing Claude analysis...","priority: high"], hi:true },
-    ],
-    slack: {
-      time: "10:15 AM",
-      html: `<div class="perf-report report-warn">
-        <div class="report-header">&#9888;&#65039; Anomaly Detected &#8212; Apex Roofing</div>
-        <div class="report-sub">Meta Ads &middot; Detected at 10:14 AM &middot; Severity: Warning</div>
-        <hr class="report-divider">
-        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px"><strong>CPA has spiked 47% above target</strong> in the last 4 hours. Multiple metrics are degrading simultaneously.</div>
-        <hr class="report-divider">
-        <div class="section-title">Metric Breakdown</div>
-        <div class="metric-row"><span class="metric-label">CPA</span><span class="metric-value">$56.00</span><span class="mtag mtag-bad">+47% above $38 target</span></div>
-        <div class="metric-row"><span class="metric-label">ROAS</span><span class="metric-value">2.1x</span><span class="mtag mtag-bad">below 2.5x floor</span></div>
-        <div class="metric-row"><span class="metric-label">CTR</span><span class="metric-value">1.6%</span><span class="mtag mtag-warn">-33% from baseline</span></div>
-        <div class="metric-row"><span class="metric-label">MTD Spend</span><span class="metric-value">$2,890</span><span class="mtag mtag-warn">58% of $5K budget</span></div>
-        <hr class="report-divider">
-        <div style="font-size:12px;color:#e3b341">&#128300; Running AI analysis to identify root cause...</div>
-      </div>`,
-      reactions: [{e:"&#128064;",c:4}]
+    resp: {
+      type:"full", client:"Vela Skincare", days:30,
+      health:"⚠️ Account underperforming. CPA has spiked 52% above the $29 target and CTR has dropped 42% from baseline. A new competitor appears to be bidding aggressively on Vela's core keywords — impression share dropped from 78% to 52%.",
+      topline:[{l:"Total Spend",v:"$6,120",tag:null},{l:"Conversions",v:"139",tag:null},{l:"ROAS",v:"2.8x",tag:"bad"},{l:"CPA",v:"$44",tag:"bad"},{l:"CTR",v:"1.8%",tag:"warn"}],
+      meta:null,
+      google:{spend:"$6,120",roas:"2.8x",cpa:"$44",ctr:"1.8%",conv:"139",tag:"bad"},
+      callouts:[
+        {i:"🔴",t:"CPA at $44 is 52% above the $29 target. At current spend this account is buying volume at a significant premium."},
+        {i:"🔴",t:"CTR dropped from 3.1% to 1.8% in the last 2 weeks — impression share loss suggests competitor entry, not creative fatigue."},
+        {i:"🟡",t:'Branded campaigns still holding at $18 CPA — the degradation is concentrated in non-brand search terms "skincare routine" and "face serum".'}
+      ],
+      actions:[
+        {lbl:"Urgent",t:"Increase bids 15–20% on top 5 converting keywords to recover impression share. Current losses are going directly to the new competitor."},
+        {lbl:"This Week",t:"Add negative keywords for irrelevant new search terms detected in the query report. At least 12 junk terms identified."},
+        {lbl:"Reallocation",t:"Shift $1,500 from broad non-brand campaigns to exact match branded + top converters. Defend the high-intent terms first."}
+      ],
+      bl:"This is a competitor-driven issue, not a creative problem. Defend the top keywords with bid increases, cut the waste with negatives, and reassess in 7 days."
     }
   },
-
-  // ── Phase 3: Claude AI analysis ──
   {
-    label: "CLAUDE AI ROOT CAUSE ANALYSIS",
-    desc: "10:16 AM — Deep analysis running",
+    q: { author:"Sam Rivera", init:"SR", color:"#16a34a", time:"10:15 AM", text:'<span class="mention">@Ad Performance Agent</span> how is Ironclad HVAC doing?' },
     steps: [
-      { lbl:"Pulling historical performance data", t:"0.6s", cls:"done", details:["date_range: last 30 days","ad_set breakdown: 4 sets","creative performance: 12 ads"], hi:false },
-      { lbl:"Fetching frequency & fatigue signals", t:"0.4s", cls:"done", details:["top ad set frequency: 4.7x","creative age: 18 days","CTR trend: declining"], hi:true },
-      { lbl:"Generating analysis via Claude", t:"3.2s", cls:"done", details:["model: claude-opus-4-6","tokens in: 2,340","tokens out: 580","root cause identified ✓","confidence: 92%"], hi:true },
-      { lbl:"Posting analysis to Slack", t:"0.2s", cls:"done", details:["threaded to alert ✓","message delivered ✓"], hi:false },
+      { lbl:"Webhook received from Slack", t:"0.1s", details:["event: app_mention","user: sam.rivera"], err:false, hi:false },
+      { lbl:"Extracting intent via Claude", t:"1.1s", details:['client: "Ironclad HVAC"',"days: 7 (default)","platforms: meta + google"], err:false, hi:true },
+      { lbl:"Account ID lookup — Google Sheets", t:"0.2s", details:["match found ✓","meta_id: act_3301847","google_id: 5578293010","budget: $8,000/mo"], err:false, hi:false },
+      { lbl:"Fetching Meta Ads data", t:"0.8s", details:["5 campaigns active","date_range: last 7d","86 rows returned"], err:false, hi:false },
+      { lbl:"Fetching Google Ads data", t:"0.6s", details:["4 campaigns active","date_range: last 7d","64 rows returned"], err:false, hi:false },
+      { lbl:"Generating AI analysis", t:"3.4s", details:["model: claude-opus-4-6","tokens in: 1,920","tokens out: 640","mixed signals detected"], err:false, hi:true },
+      { lbl:"Posting response to Slack", t:"0.2s", details:["thread_ts matched","message delivered ✓"], err:false, hi:false }
     ],
-    slack: {
-      time: "10:17 AM",
-      html: `<div class="perf-report report-ai">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
-          <span style="font-size:16px">&#129302;</span>
-          <span style="font-size:10px;font-weight:700;color:#bc8cff;letter-spacing:.06em;text-transform:uppercase">Claude AI Analysis</span>
-        </div>
-        <div style="font-size:13px;color:#d1d2d3;line-height:1.6">
-          <strong>Root cause identified: Creative fatigue on top-performing ad set.</strong><br><br>
-          The primary ad set <code>"Roof Repair - Homeowners 35-65"</code> has been running the same 3 creatives for 18 days. Frequency has reached <strong>4.7x</strong> (threshold: 3.0x), causing CTR to decline from 2.4% to 1.6%.<br><br>
-          <div class="section-title">Contributing Factors</div>
-          <div class="callout-row"><span>&#128308;</span><span>Ad set frequency 4.7x &#8212; audience is oversaturated</span></div>
-          <div class="callout-row"><span>&#128308;</span><span>No new creatives added in 18 days</span></div>
-          <div class="callout-row"><span>&#128308;</span><span>Top creative CTR dropped 52% in last 7 days</span></div>
-          <div class="callout-row"><span>&#128993;</span><span>Cost per result increasing on a 3-day rolling average</span></div>
-          <hr class="report-divider">
-          <div style="font-size:12px;color:#bc8cff"><strong>Confidence:</strong> High (92%) &#8212; pattern matches creative fatigue profile across 140+ similar accounts.</div>
-        </div>
-      </div>`,
-      reactions: [{e:"&#129504;",c:3},{e:"&#128175;",c:2}]
+    resp: {
+      type:"full", client:"Ironclad HVAC", days:7,
+      health:"Mixed results. Google Ads is outperforming Meta significantly — ROAS 4.8x vs 2.4x. Meta is dragging down the blended numbers with high CPA on broad prospecting campaigns. A reallocation from Meta to Google would improve overall efficiency.",
+      topline:[{l:"Total Spend",v:"$3,720",tag:null},{l:"Conversions",v:"84",tag:null},{l:"Blended ROAS",v:"3.6x",tag:"good"},{l:"Blended CPA",v:"$42",tag:"good"},{l:"Avg CTR",v:"2.2%",tag:"good"}],
+      meta:{spend:"$2,100",roas:"2.4x",cpa:"$54",ctr:"1.6%",conv:"39",tag:"warn"},
+      google:{spend:"$1,620",roas:"4.8x",cpa:"$36",ctr:"3.0%",conv:"45",tag:"good"},
+      callouts:[
+        {i:"🟡",t:"Google is outperforming Meta on every efficiency metric — ROAS 100% higher, CPA $18 lower — yet receives only 44% of total budget."},
+        {i:"🔴",t:"Meta broad prospecting CPA at $72 is 71% above target. These campaigns are loss-making and should be paused or restructured."},
+        {i:"🟢",t:'Google Search "HVAC repair near me" campaign driving 60% of Google conversions at $28 CPA — strongest performer across both platforms.'}
+      ],
+      actions:[
+        {lbl:"Immediate",t:"Shift $1,000–$1,500 from Meta broad prospecting to Google Search over the next 7 days. Monitor Google CPA for degradation past $40."},
+        {lbl:"This Week",t:'Pause Meta ad sets with CPA above $60. Pull frequency report — if above 3.5x, creative fatigue is compounding the efficiency issue.'},
+        {lbl:"Next Sprint",t:"Test Meta retargeting audiences only (website visitors, engagement custom audiences). Cut all cold prospecting until new creatives are ready."}
+      ],
+      bl:"Google is the efficiency engine. Meta is doing volume at a premium. This week: pause the worst Meta ad sets, reallocate $1K+ to Google Search, reassess in 7 days."
     }
   },
-
-  // ── Phase 4: Recommended action ──
   {
-    label: "GENERATING RECOMMENDATIONS",
-    desc: "10:17 AM — Action plan ready",
+    q: { author:"Maya Chen", init:"MC", color:"#dc2626", time:"10:48 AM", text:'<span class="mention">@Ad Performance Agent</span> how is Pinnacle Plumbing doing this month?' },
     steps: [
-      { lbl:"Scoring ad set performance", t:"0.4s", cls:"done", details:["best performer: Emergency Roof - Storm Season","CPA: $31 (vs $56 on fatigued set)","CTR: 2.9% — healthy"], hi:true },
-      { lbl:"Building reallocation plan", t:"0.3s", cls:"done", details:["source: Roof Repair ad set → pause","destination: Storm Season → +$800/day","estimated CPA recovery: $35-38"], hi:true },
-      { lbl:"Posting recommendations", t:"0.2s", cls:"done", details:["3 action items attached","awaiting team approval"], hi:false },
+      { lbl:"Webhook received from Slack", t:"0.1s", details:["event: app_mention","user: maya.chen"], err:false, hi:false },
+      { lbl:"Extracting intent via Claude", t:"1.1s", details:['client: "Pinnacle Plumbing"',"days: 30 (this month)","platforms: meta + google"], err:false, hi:true },
+      { lbl:"Account ID lookup — Google Sheets", t:"0.2s", details:["no match found ✕","searched: 'Pinnacle Plumbing'","checked 14 records"], err:true, hi:false },
+      { lbl:"Generating graceful error response", t:"0.4s", details:["client not in account map","building friendly fallback"], err:false, hi:false },
+      { lbl:"Posting response to Slack", t:"0.1s", details:["message delivered ✓"], err:false, hi:false }
     ],
-    slack: {
-      time: "10:17 AM",
-      html: `<div class="perf-report">
-        <div class="report-header">&#128161; Recommended Actions &#8212; Apex Roofing</div>
-        <hr class="report-divider">
-        <div class="action-block action-urgent"><div class="action-lbl lbl-urgent">Immediate</div>Pause ad set <code>"Roof Repair - Homeowners 35-65"</code> &#8212; it's burning budget at a $56 CPA with no signs of recovery.</div>
-        <div class="action-block action-warn"><div class="action-lbl lbl-warn">Today</div>Reallocate $800 daily budget to ad set <code>"Emergency Roof - Storm Season"</code> which is holding a $31 CPA and 2.9% CTR.</div>
-        <div class="action-block"><div class="action-lbl">This Week</div>Brief creative team on 3&#8211;4 new video variants for the fatigued audience. UGC testimonial format recommended based on vertical benchmarks.</div>
-        <hr class="report-divider">
-        <div style="font-size:12px;color:var(--slack-muted)">&#128172; Reply <strong>approve</strong> to let ThinkFlow execute the pause + reallocation, or <strong>dismiss</strong> to take manual action.</div>
-      </div>`,
-      reactions: [{e:"&#9989;",c:2},{e:"&#128588;",c:1}]
-    }
-  },
-
-  // ── Phase 5: Vela Skincare CTR drop ──
-  {
-    label: "ANOMALY DETECTION — VELA SKINCARE",
-    desc: "1:32 PM — Afternoon monitoring cycle",
-    steps: [
-      { lbl:"Scheduled monitoring check", t:"0.0s", cls:"done", details:["trigger: every 2 hours","cycle: afternoon"], hi:false },
-      { lbl:"Syncing Vela Skincare — Google Ads", t:"0.7s", cls:"done", details:["campaigns: 6 active","spend since 8AM: +$440","rows: 112"], hi:false },
-      { lbl:"Running threshold comparison", t:"0.2s", cls:"error", details:["CTR: 1.8% vs 3.1% baseline → -42% ⚠","CPA: $44 vs $29 target → +52% ⚠","ROAS: 2.8x vs 3.5x floor → BREACH ⚠","impression share: 52% (was 78%)"], hi:true },
-      { lbl:"CRITICAL anomaly confirmed", t:"0.1s", cls:"error", details:["account: Vela Skincare","severity: CRITICAL","breaches: 3 metrics","escalation: @channel"], hi:false },
-      { lbl:"Running rapid AI assessment", t:"2.1s", cls:"done", details:["model: claude-opus-4-6","tokens in: 1,890","tokens out: 440","competitor surge detected ✓"], hi:true },
-    ],
-    slack: null
-  },
-
-  // ── Phase 6: Escalation alert ──
-  {
-    label: "CRITICAL ESCALATION",
-    desc: "1:33 PM — Urgent alert dispatched",
-    steps: [
-      { lbl:"Composing escalation message", t:"0.2s", cls:"error", details:["severity: CRITICAL","tag: @channel","AI assessment: attached"], hi:false },
-      { lbl:"Posting URGENT to Slack", t:"0.2s", cls:"done", details:["message delivered ✓","@channel notified","priority: critical"], hi:false },
-    ],
-    slack: {
-      time: "1:33 PM",
-      html: `<div class="perf-report report-crit">
-        <div class="report-header">&#128680; URGENT: Vela Skincare &#8212; Critical Alert</div>
-        <div class="report-sub">Google Ads &middot; Detected at 1:32 PM &middot; Severity: Critical</div>
-        <hr class="report-divider">
-        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px"><span class="mention">@channel</span> <strong>Vela Skincare Google Ads CTR has dropped 42%</strong> in the last 3 hours. Account status escalated to <strong style="color:#f85149">Critical</strong>.</div>
-        <hr class="report-divider">
-        <div class="section-title">Metric Breakdown</div>
-        <div class="metric-row"><span class="metric-label">CTR</span><span class="metric-value">1.8%</span><span class="mtag mtag-bad">was 3.1% at 8AM</span></div>
-        <div class="metric-row"><span class="metric-label">CPA</span><span class="metric-value">$44.00</span><span class="mtag mtag-bad">+52% above $29 target</span></div>
-        <div class="metric-row"><span class="metric-label">ROAS</span><span class="metric-value">2.8x</span><span class="mtag mtag-warn">below 3.5x floor</span></div>
-        <div class="metric-row"><span class="metric-label">Impr. Share</span><span class="metric-value">52%</span><span class="mtag mtag-bad">was 78% at 8AM</span></div>
-        <hr class="report-divider">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="font-size:14px">&#129302;</span><span style="font-size:10px;font-weight:700;color:#bc8cff;letter-spacing:.06em;text-transform:uppercase">Claude AI &#8212; Rapid Assessment</span></div>
-        <div style="font-size:13px;color:#d1d2d3;line-height:1.5">
-          <strong>Likely cause: Competitor bidding surge on core branded terms.</strong> Google Auction Insights show a new competitor entering Vela's top keywords in the last 4 hours. Impression share dropped from 78% to 52%.<br><br>
-          <strong>Recommended:</strong> Increase bids 15&#8211;20% on top 5 converting keywords. Add negative keywords for irrelevant new search terms detected.
-        </div>
-      </div>`,
-      reactions: [{e:"&#128680;",c:5},{e:"&#128064;",c:3}]
-    }
-  },
-
-  // ── Phase 7: Recovery ──
-  {
-    label: "RECOVERY CONFIRMATION",
-    desc: "3:45 PM — Actions executed, accounts recovering",
-    steps: [
-      { lbl:"Apex Roofing — action executed", t:"0.3s", cls:"done", details:["ad set paused: Roof Repair - Homeowners","budget reallocated: +$800 to Storm Season","new CPA: $35 (recovered ✓)","new ROAS: 3.4x (recovered ✓)"], hi:true },
-      { lbl:"Vela Skincare — action executed", t:"0.3s", cls:"done", details:["keyword bids adjusted: +18%","negative keywords added: 12 terms","new CPA: $27 (recovered ✓)","new CTR: 3.3% (recovered ✓)"], hi:true },
-      { lbl:"All accounts re-verified healthy", t:"0.4s", cls:"done", details:["Apex Roofing: HEALTHY ✓","Vela Skincare: HEALTHY ✓","Ironclad HVAC: HEALTHY ✓ (no change)"], hi:true },
-      { lbl:"Posting recovery summary", t:"0.2s", cls:"done", details:["message delivered ✓","savings calculated: $1,840"], hi:false },
-    ],
-    slack: {
-      time: "3:45 PM",
-      html: `<div class="perf-report report-ok">
-        <div class="report-header">&#9989; All Accounts Recovered</div>
-        <div class="report-sub">Status update &middot; 3:45 PM &middot; All accounts back to Healthy</div>
-        <hr class="report-divider">
-        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:8px">Actions executed successfully. Both flagged accounts have returned to healthy performance:</div>
-        <div style="background:rgba(43,172,118,.06);border-radius:6px;padding:10px 12px;margin-bottom:8px">
-          <div style="font-weight:700;color:#e8e8e8;font-size:13px;margin-bottom:4px">&#128994; Apex Roofing &#8212; Recovered</div>
-          <div style="font-size:12px;color:#d1d2d3;line-height:1.5">Fatigued ad set paused. Budget reallocated to <code>"Emergency Roof - Storm Season"</code>.<br>CPA recovered from $56 &#8594; <strong style="color:#2bac76">$35</strong> &middot; ROAS back to <strong style="color:#2bac76">3.4x</strong></div>
-        </div>
-        <div style="background:rgba(43,172,118,.06);border-radius:6px;padding:10px 12px;margin-bottom:8px">
-          <div style="font-weight:700;color:#e8e8e8;font-size:13px;margin-bottom:4px">&#128994; Vela Skincare &#8212; Recovered</div>
-          <div style="font-size:12px;color:#d1d2d3;line-height:1.5">Keyword bids adjusted +18%. Negative keywords added for competitor terms.<br>CPA recovered from $44 &#8594; <strong style="color:#2bac76">$27</strong> &middot; CTR back to <strong style="color:#2bac76">3.3%</strong></div>
-        </div>
-        <hr class="report-divider">
-        <div class="bottom-line"><strong style="color:#2bac76">IMPACT TODAY</strong><br>ThinkFlow detected and resolved 2 performance anomalies within minutes, preventing an estimated <strong style="color:#e8e8e8">$1,840 in wasted ad spend</strong> across both accounts.</div>
-      </div>`,
-      reactions: [{e:"&#127881;",c:6},{e:"&#128640;",c:4},{e:"&#128154;",c:3}]
-    }
-  },
+    resp: { type:"not_found", client:"Pinnacle Plumbing" }
+  }
 ];
 
-// ═══════════════════════════════════════════════════════
-// Build flat step index — each phase has N agent steps + optional slack msg
-// ═══════════════════════════════════════════════════════
-let phaseStarts = [];
+// Build flat step index
+let scenarioStarts = [];
 let totalSteps = 0;
-PHASES.forEach((p, i) => {
-  phaseStarts[i] = totalSteps;
-  totalSteps += p.steps.length + (p.slack ? 1 : 0);
+SCENARIOS.forEach((s, i) => {
+  scenarioStarts[i] = totalSteps;
+  totalSteps += s.steps.length + 2; // +2 for user msg and bot response
 });
 
 let g = 0;
 let playing = false;
 let iv = null;
 
-function getPhase(step) {
-  for (let i = PHASES.length - 1; i >= 0; i--) {
-    if (step >= phaseStarts[i]) return { pi: i, local: step - phaseStarts[i] };
+function getSI(step) {
+  for (let i = SCENARIOS.length - 1; i >= 0; i--) {
+    if (step >= scenarioStarts[i]) return { si: i, local: step - scenarioStarts[i] };
   }
-  return { pi: 0, local: 0 };
+  return { si: 0, local: 0 };
 }
 
 function togglePlay() {
@@ -467,7 +306,7 @@ function togglePlay() {
     btn.innerHTML = '&#9208; Pause';
     btn.classList.add('paused');
     dot.classList.add('active');
-    document.getElementById('engineStatus').textContent = 'Monitoring';
+    document.getElementById('engineStatus').textContent = 'Processing';
     iv = setInterval(() => {
       if (g >= totalSteps) { togglePlay(); document.getElementById('stateLabel').textContent = 'Demo complete'; return; }
       render(g++);
@@ -484,21 +323,14 @@ function togglePlay() {
 function stepForward() {
   if (g >= totalSteps) return;
   render(g++);
+  document.getElementById('stateLabel').textContent = `Step ${g}/${totalSteps}`;
 }
 
-function skipToAlert() {
-  // Skip to phase 2 (anomaly alert) or phase 6 (escalation)
-  const { pi } = getPhase(g);
-  let target;
-  if (pi < 2) target = phaseStarts[2];
-  else if (pi < 6) target = phaseStarts[6];
-  else return;
-  while (g < target && g < totalSteps) render(g++);
-}
-
-function skipToResolution() {
-  const target = phaseStarts[7];
-  while (g < target + PHASES[7].steps.length + 1 && g < totalSteps) render(g++);
+function skipQuery() {
+  const { si } = getSI(g);
+  if (si + 1 >= SCENARIOS.length) return;
+  g = scenarioStarts[si + 1];
+  render(g++);
 }
 
 function resetDemo() {
@@ -514,78 +346,139 @@ function resetDemo() {
   document.getElementById('playBtn').classList.remove('paused');
 }
 
-function showEl(el, feed) {
-  const container = document.getElementById(feed ? 'agentFeed' : 'slackMessages');
-  container.appendChild(el);
-  setTimeout(() => { el.classList.add('visible'); container.scrollTop = container.scrollHeight; }, 30);
+function show(el, feed) {
+  (feed ? document.getElementById('agentFeed') : document.getElementById('slackMessages')).appendChild(el);
+  setTimeout(() => { el.classList.add('visible'); scrollEl(feed ? 'agentFeed' : 'slackMessages'); }, 30);
 }
 
+function scrollEl(id) { const e = document.getElementById(id); e.scrollTop = e.scrollHeight; }
+
 function render(step) {
-  const { pi, local } = getPhase(step);
-  const phase = PHASES[pi];
+  const { si, local } = getSI(step);
+  const sc = SCENARIOS[si];
   const typing = document.getElementById('typingEl');
 
-  // Phase label badge in agent feed at start of each phase
   if (local === 0) {
-    if (pi > 0) {
-      const d = document.createElement('hr');
-      d.className = 'agent-divider';
+    // User message in Slack
+    if (si > 0) {
+      const d = document.createElement('hr'); d.className = 'agent-divider';
       document.getElementById('agentFeed').appendChild(d);
     }
     const badge = document.createElement('div');
-    badge.className = 'phase-badge';
-    badge.innerHTML = `<div class="pb-label">// PHASE ${pi+1}/${PHASES.length}: ${phase.label}</div><div class="pb-text">${phase.desc}</div>`;
+    badge.className = 'query-badge';
+    badge.innerHTML = `<div class="qb-label">// INCOMING QUERY ${si+1}/${SCENARIOS.length}</div><div class="qb-text">${sc.q.author}: ${sc.q.text.replace(/<[^>]+>/g,'')}</div>`;
     document.getElementById('agentFeed').appendChild(badge);
-  }
 
-  const stepsCount = phase.steps.length;
-  const hasSlack = !!phase.slack;
-
-  if (local < stepsCount) {
-    // Agent step
-    const sd = phase.steps[local];
-    const el = document.createElement('div');
-    el.className = 'agent-step';
-    const clsMap = { done:'sn-done', warn:'sn-warn', error:'sn-error' };
-    const iconMap = { done:'✓', warn:'⚠', error:'✕' };
-    const tClsMap = { done:'', warn:' t-warn', error:' t-err' };
-    const nc = clsMap[sd.cls] || 'sn-done';
-    const icon = iconMap[sd.cls] || '✓';
-    const tc = tClsMap[sd.cls] || '';
-    el.innerHTML = `<div class="step-header"><div class="step-num ${nc}">${icon}</div><div class="step-lbl">${sd.lbl}</div><div class="step-t${tc}">${sd.t}</div></div><div class="step-body">${sd.details.map(d => {
-      let cls = 'sd';
-      if (sd.hi) cls += ' hi';
-      if (d.includes('✓')) cls = 'sd ok';
-      if (d.includes('✕') || d.includes('BREACH') || d.includes('CRITICAL')) cls = 'sd er';
-      if (d.includes('⚠') || d.includes('warning')) cls = 'sd wr';
-      return `<div class="${cls}">${d}</div>`;
-    }).join('')}</div>`;
-    showEl(el, true);
-
-    // Show typing if next step will be a slack message
-    if (local === stepsCount - 1 && hasSlack) {
-      typing.classList.add('visible');
-    }
-
-    document.getElementById('stateLabel').textContent = `Phase ${pi+1}/${PHASES.length} — ${phase.label}`;
-
-  } else if (hasSlack) {
-    // Slack message
-    typing.classList.remove('visible');
-    const s = phase.slack;
     const msg = document.createElement('div');
     msg.className = 'msg-group';
-    let reactHTML = '';
-    if (s.reactions) {
-      reactHTML = '<div class="msg-reactions">' + s.reactions.map(r => `<div class="reaction">${r.e} <span class="reaction-count">${r.c}</span></div>`).join('') + '</div>';
-    }
-    msg.innerHTML = `<div class="avatar" style="background:#B22222;font-size:10px;font-weight:800">TF</div><div class="msg-content"><div class="msg-header"><span class="msg-author bot">ThinkFlow Agent</span><span class="bot-badge">APP</span><span class="msg-time">${s.time}</span></div>${s.html}${reactHTML}</div>`;
-    showEl(msg, false);
+    msg.innerHTML = `<div class="avatar" style="background:${sc.q.color}">${sc.q.init}</div><div class="msg-content"><div class="msg-header"><span class="msg-author">${sc.q.author}</span><span class="msg-time">${sc.q.time}</span></div><div class="msg-text">${sc.q.text}</div></div>`;
+    show(msg, false);
+    document.getElementById('stateLabel').textContent = `Query ${si+1}/${SCENARIOS.length}`;
 
-    document.getElementById('stateLabel').textContent = `Phase ${pi+1} complete`;
-    if (pi === PHASES.length - 1) {
-      document.getElementById('engineStatus').textContent = 'All Clear';
+  } else if (local <= sc.steps.length) {
+    // Agent execution step
+    const sd = sc.steps[local - 1];
+    const el = document.createElement('div');
+    el.className = 'agent-step';
+    const cls = sd.err ? 'sn-error' : 'sn-done';
+    const icon = sd.err ? '✕' : '✓';
+    el.innerHTML = `<div class="step-header"><div class="step-num ${cls}">${icon}</div><div class="step-lbl">${sd.lbl}</div><div class="step-t">${sd.t}</div></div><div class="step-body">${sd.details.map(d=>`<div class="sd${sd.hi?' hi':''}">${d}</div>`).join('')}</div>`;
+    show(el, true);
+    if (local === 1) typing.classList.add('visible');
+
+  } else {
+    // Bot response in Slack
+    typing.classList.remove('visible');
+    const r = sc.resp;
+    const msg = document.createElement('div');
+    msg.className = 'msg-group';
+    let content = '';
+
+    if (r.type === 'not_found') {
+      content = `<div class="not-found"><span style="font-size:18px">⚠️</span><div><div style="font-weight:700;color:#e8e8e8;margin-bottom:4px">Client not found in account map</div><div style="font-size:13px;color:#8c8c8c;line-height:1.5">I couldn't find <strong style="color:#d1d2d3">${r.client}</strong> in the connected accounts. Check the spelling or ask an admin to add this client to the mapping sheet.</div><div style="margin-top:8px;font-size:12px;color:#5e99d4">Tracked clients: Apex Roofing, Vela Skincare, Ironclad HVAC, Summit Outdoors, Blue Ridge Apparel +9 more</div></div></div>`;
+
+      const t = sc.q.time;
+      const parts = t.match(/(\d+):(\d+)\s*(AM|PM)/);
+      const newMin = String((parseInt(parts[2]) + 2) % 60).padStart(2,'0');
+      const newTime = `${parts[1]}:${newMin} ${parts[3]}`;
+
+      msg.innerHTML = `<div class="avatar" style="background:#B22222;font-size:10px;font-weight:800">TF</div><div class="msg-content"><div class="msg-header"><span class="msg-author bot">Ad Performance Agent</span><span class="bot-badge">APP</span><span class="msg-time">${newTime}</span></div>${content}</div>`;
+      show(msg, false);
+      document.getElementById('stateLabel').textContent = `Query ${si+1} complete`;
+      return;
     }
+
+    const tagLabel = t => t==='good'?'↑ On track':t==='warn'?'→ Watch':'↓ Below target';
+    const tagText = t => t==='good'?'On Track':t==='warn'?'Monitor':'Underperforming';
+
+    // Build topline
+    let toplineHTML = r.topline.map(m=>`<div class="metric-row"><span class="metric-label">${m.l}</span><span class="metric-value">${m.v}</span>${m.tag?`<span class="mtag mtag-${m.tag}">${tagLabel(m.tag)}</span>`:''}</div>`).join('');
+
+    // Build channel breakdown
+    let channelHTML = '';
+    if (r.meta && r.google) {
+      const mTag = r.meta.tag==='bad'?'mtag-bad':r.meta.tag==='warn'?'mtag-warn':'mtag-good';
+      const gTag = r.google.tag==='bad'?'mtag-bad':r.google.tag==='warn'?'mtag-warn':'mtag-good';
+      channelHTML = `<div class="channel-grid">
+        <div class="channel-box">
+          <div class="channel-label"><span class="channel-dot" style="background:#1877f2"></span>META ADS</div>
+          ${[['Spend',r.meta.spend],['ROAS',r.meta.roas],['CPA',r.meta.cpa],['CTR',r.meta.ctr],['Conv.',r.meta.conv]].map(([l,v])=>`<div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">${l}</span><span class="metric-value" style="font-size:12px">${v}</span></div>`).join('')}
+          <span class="mtag ${mTag}" style="margin-top:4px;display:inline-block">${tagText(r.meta.tag)}</span>
+        </div>
+        <div class="channel-box">
+          <div class="channel-label"><span class="channel-dot" style="background:#4285f4"></span>GOOGLE ADS</div>
+          ${[['Spend',r.google.spend],['ROAS',r.google.roas],['CPA',r.google.cpa],['CTR',r.google.ctr],['Conv.',r.google.conv]].map(([l,v])=>`<div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">${l}</span><span class="metric-value" style="font-size:12px">${v}</span></div>`).join('')}
+          <span class="mtag ${gTag}" style="margin-top:4px;display:inline-block">${tagText(r.google.tag)}</span>
+        </div>
+      </div>`;
+    } else if (r.meta) {
+      const mTag = r.meta.tag==='bad'?'mtag-bad':r.meta.tag==='warn'?'mtag-warn':'mtag-good';
+      channelHTML = `<div class="channel-grid" style="grid-template-columns:1fr">
+        <div class="channel-box">
+          <div class="channel-label"><span class="channel-dot" style="background:#1877f2"></span>META ADS</div>
+          ${[['Spend',r.meta.spend],['ROAS',r.meta.roas],['CPA',r.meta.cpa],['CTR',r.meta.ctr],['Conv.',r.meta.conv]].map(([l,v])=>`<div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">${l}</span><span class="metric-value" style="font-size:12px">${v}</span></div>`).join('')}
+          <span class="mtag ${mTag}" style="margin-top:4px;display:inline-block">${tagText(r.meta.tag)}</span>
+        </div>
+      </div>`;
+    } else if (r.google) {
+      const gTag = r.google.tag==='bad'?'mtag-bad':r.google.tag==='warn'?'mtag-warn':'mtag-good';
+      channelHTML = `<div class="channel-grid" style="grid-template-columns:1fr">
+        <div class="channel-box">
+          <div class="channel-label"><span class="channel-dot" style="background:#4285f4"></span>GOOGLE ADS</div>
+          ${[['Spend',r.google.spend],['ROAS',r.google.roas],['CPA',r.google.cpa],['CTR',r.google.ctr],['Conv.',r.google.conv]].map(([l,v])=>`<div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">${l}</span><span class="metric-value" style="font-size:12px">${v}</span></div>`).join('')}
+          <span class="mtag ${gTag}" style="margin-top:4px;display:inline-block">${tagText(r.google.tag)}</span>
+        </div>
+      </div>`;
+    }
+
+    content = `<div class="perf-report">
+      <div class="report-header">📊 ${r.client} — Ad Performance Report</div>
+      <div class="report-sub">Last ${r.days} days · ${r.meta && r.google ? 'Meta Ads + Google Ads' : r.meta ? 'Meta Ads' : 'Google Ads'} · ThinkFlow Intelligence</div>
+      <hr class="report-divider">
+      <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px">${r.health}</div>
+      <hr class="report-divider">
+      <div class="section-title">Topline Metrics</div>
+      ${toplineHTML}
+      <hr class="report-divider">
+      <div class="section-title">Platform Breakdown</div>
+      ${channelHTML}
+      <hr class="report-divider">
+      <div class="section-title">Key Callouts</div>
+      ${r.callouts.map(c=>`<div class="callout-row"><span>${c.i}</span><span>${c.t}</span></div>`).join('')}
+      <hr class="report-divider">
+      <div class="section-title">Actionable Recommendations</div>
+      ${r.actions.map(a=>`<div class="action-block"><div class="action-lbl">${a.lbl}</div>${a.t}</div>`).join('')}
+      <div class="bottom-line"><strong style="color:#2bac76">BOTTOM LINE</strong><br>${r.bl}</div>
+    </div>`;
+
+    const t = sc.q.time;
+    const parts = t.match(/(\d+):(\d+)\s*(AM|PM)/);
+    const newMin = String((parseInt(parts[2]) + 2) % 60).padStart(2,'0');
+    const newTime = `${parts[1]}:${newMin} ${parts[3]}`;
+
+    msg.innerHTML = `<div class="avatar" style="background:#B22222;font-size:10px;font-weight:800">TF</div><div class="msg-content"><div class="msg-header"><span class="msg-author bot">Ad Performance Agent</span><span class="bot-badge">APP</span><span class="msg-time">${newTime}</span></div>${content}</div>`;
+    show(msg, false);
+    document.getElementById('stateLabel').textContent = `Query ${si+1} complete`;
   }
 }
 </script>
