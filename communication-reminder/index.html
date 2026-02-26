@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communication Reminder — Interactive Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .slack-msg { animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .pulse-dot {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    #slack-feed { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+    #slack-feed::-webkit-scrollbar { width: 6px; }
+    #slack-feed::-webkit-scrollbar-track { background: #2d3748; }
+    #slack-feed::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+
+  <!-- Control Bar -->
+  <div class="bg-gray-900 text-white px-6 py-3 flex items-center gap-4 flex-wrap">
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-green-400 pulse-dot" id="status-dot"></div>
+      <span class="text-sm font-medium text-gray-300">DEMO MODE</span>
+    </div>
+    <div class="h-5 w-px bg-gray-700"></div>
+    <div class="flex items-center gap-2">
+      <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="text-sm font-mono" id="sim-time">Mon 8:00 AM MST</span>
+    </div>
+    <div class="h-5 w-px bg-gray-700"></div>
+    <span class="text-xs text-gray-400" id="elapsed-label">Elapsed: 0h</span>
+    <div class="flex items-center gap-2 ml-auto">
+      <button onclick="togglePlay()" id="play-btn" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5">
+        <svg id="play-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pause-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        <span id="play-label">Play</span>
+      </button>
+      <button onclick="advanceTime(1)" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors">+1 hr</button>
+      <button onclick="advanceTime(4)" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors">+4 hr</button>
+      <button onclick="advanceTime(8)" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors">+8 hr</button>
+      <button onclick="resetDemo()" class="px-3 py-1.5 bg-red-600/80 hover:bg-red-500 rounded-lg text-sm font-medium transition-colors">Reset</button>
+    </div>
+  </div>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Left: Dashboard -->
+    <div class="flex-1 overflow-y-auto">
+      <!-- Header -->
+      <header class="sticky top-0 z-20 bg-white border-b border-gray-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-14">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+            </div>
+            <span class="text-base font-semibold text-gray-900">Communication Reminder</span>
+          </div>
+          <div class="ml-auto text-xs text-gray-400">Dashboard</div>
+        </div>
+      </header>
+
+      <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Channel Status -->
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-1">Channel Status</h2>
+          <p class="text-sm text-gray-500 mb-5">Live view of monitored client channels.</p>
+          <div id="channel-cards" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </section>
+
+        <!-- Recent Reminders -->
+        <section class="mt-10">
+          <h2 class="text-lg font-bold text-gray-900 mb-1">Recent Reminders</h2>
+          <p class="text-sm text-gray-500 mb-5">Escalation messages sent to #communication-reminders.</p>
+          <div id="reminder-table-container">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-10 text-center">
+              <svg class="mx-auto h-10 w-10 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <p class="text-gray-500">No reminders sent yet. All channels are in good standing!</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-xs text-gray-400">
+        Communication Reminder &middot; Checks every hour Mon-Fri 8AM-6PM MST
+      </footer>
+    </div>
+
+    <!-- Right: Slack Feed -->
+    <div class="w-96 bg-gray-800 border-l border-gray-700 flex flex-col flex-shrink-0">
+      <div class="px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+        <span class="text-white font-semibold text-sm"># communication-reminders</span>
+        <span class="ml-auto text-xs text-gray-500">Simulated</span>
+      </div>
+      <div id="slack-feed" class="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+        <div class="text-center text-xs text-gray-500 py-8">
+          Reminders will appear here as channels escalate...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────────────────────
+    const CHANNELS = [
+      { id: "acme",    label: "Acme Corp",     manager: "Sarah Chen",    resetAtHour: null },
+      { id: "sunrise", label: "Sunrise Media",  manager: "Jake Morrison", resetAtHour: 6 },
+      { id: "peak",    label: "Peak Digital",   manager: "Maria Lopez",  resetAtHour: null },
+    ];
+
+    const THRESHOLDS = [
+      { hours: 4,  level: "gentle" },
+      { hours: 8,  level: "firm" },
+      { hours: 24, level: "urgent" },
+    ];
+
+    // ── STATE ───────────────────────────────────────────────────────────────
+    let elapsedHours = 0;
+    let playing = false;
+    let playInterval = null;
+    let reminded = {};       // channelId → highest threshold hours sent
+    let reminderLog = [];    // { time, label, manager, level, hours }
+    let channelElapsed = {}; // channelId → hours since last internal msg
+
+    function initState() {
+      elapsedHours = 0;
+      reminded = {};
+      reminderLog = [];
+      channelElapsed = {};
+      CHANNELS.forEach(ch => { channelElapsed[ch.id] = 0; });
+    }
+    initState();
+
+    // ── TIME FORMATTING ─────────────────────────────────────────────────────
+    function getSimTime() {
+      const baseHour = 8; // 8 AM Monday
+      const totalHours = baseHour + elapsedHours;
+      const dayOffset = Math.floor(totalHours / 24);
+      let hour = totalHours % 24;
+
+      const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const day = days[dayOffset % 7];
+
+      const ampm = hour >= 12 ? "PM" : "AM";
+      const display = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const mins = Math.round((elapsedHours % 1) * 60);
+      return `${day} ${display}:${String(mins).padStart(2, "0")} ${ampm} MST`;
+    }
+
+    function formatHours(h) {
+      const hrs = Math.floor(h);
+      const mins = Math.round((h - hrs) * 60);
+      if (hrs > 0 && mins > 0) return `${hrs} hr ${mins} min`;
+      if (hrs > 0) return `${hrs} hr`;
+      return `${mins} min`;
+    }
+
+    // ── BADGE MAP ───────────────────────────────────────────────────────────
+    function getLevelForHours(h) {
+      if (h >= 24) return "urgent";
+      if (h >= 8) return "firm";
+      if (h >= 4) return "gentle";
+      return "good";
+    }
+
+    const BADGE = {
+      good:   { text: "All Good", bg: "bg-green-100", fg: "text-green-800" },
+      gentle: { text: "4h+",     bg: "bg-amber-100",  fg: "text-amber-800" },
+      firm:   { text: "8h+",     bg: "bg-orange-100", fg: "text-orange-800" },
+      urgent: { text: "24h+",    bg: "bg-red-100",    fg: "text-red-800" },
+    };
+
+    const LOG_BADGE = {
+      gentle: { text: "Gentle", bg: "bg-amber-100", fg: "text-amber-800" },
+      firm:   { text: "Firm",   bg: "bg-orange-100", fg: "text-orange-800" },
+      urgent: { text: "Urgent", bg: "bg-red-100",   fg: "text-red-800" },
+    };
+
+    // ── BUILD MESSAGE (matches real bot) ────────────────────────────────────
+    function buildMessage(manager, label, hours, level) {
+      const h = hours !== null ? Math.round(hours) : "many";
+      if (level === "gentle") {
+        return `👋 Hey <b>@${manager}</b>! Heads up — it's been <b>${h} hours</b> since anyone on our team has messaged in the <b>${label}</b> channel.\n\nWhen you get a chance, please check in with the client!`;
+      }
+      if (level === "firm") {
+        return `⏰ <b>@${manager}</b> — it's now been <b>${h} hours</b> without any internal activity in the <b>${label}</b> channel.\n\nPlease make sure to follow up with this client today.`;
+      }
+      return `🚨 <b>@${manager}</b> — it has been <b>${h} hours</b> since anyone on our team has messaged in the <b>${label}</b> channel.\n\nThis client needs attention ASAP. Please reach out immediately.`;
+    }
+
+    // ── RENDER ───────────────────────────────────────────────────────────────
+    function renderCards() {
+      const container = document.getElementById("channel-cards");
+      container.innerHTML = CHANNELS.map(ch => {
+        const h = channelElapsed[ch.id];
+        const level = getLevelForHours(h);
+        const b = BADGE[level];
+        return `
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-semibold text-gray-900 text-base">${ch.label}</h3>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${b.bg} ${b.fg}">${b.text}</span>
+            </div>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Account Manager</span>
+                <span class="font-medium text-gray-900">${ch.manager}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Last internal message</span>
+                <span class="font-medium text-gray-900">${h > 0 ? formatHours(h) + " ago" : "Just now"}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Last checked</span>
+                <span class="text-gray-600">${getSimTime()}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    function renderReminderTable() {
+      const container = document.getElementById("reminder-table-container");
+      if (reminderLog.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-10 text-center">
+            <svg class="mx-auto h-10 w-10 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-gray-500">No reminders sent yet. All channels are in good standing!</p>
+          </div>`;
+        return;
+      }
+
+      const rows = [...reminderLog].reverse().map(log => {
+        const lb = LOG_BADGE[log.level];
+        return `
+          <tr class="hover:bg-gray-50 transition-colors duration-75">
+            <td class="px-5 py-3 text-sm text-gray-600 whitespace-nowrap">${log.time}</td>
+            <td class="px-5 py-3 text-sm font-medium text-gray-900">${log.label}</td>
+            <td class="px-5 py-3 text-sm">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${lb.bg} ${lb.fg}">${lb.text}</span>
+            </td>
+            <td class="px-5 py-3 text-sm text-gray-900">${formatHours(log.hours)}</td>
+          </tr>`;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Channel</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours Silent</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">${rows}</tbody>
+          </table>
+        </div>`;
+    }
+
+    function addSlackMessage(manager, label, hours, level) {
+      const feed = document.getElementById("slack-feed");
+
+      // Remove the placeholder if present
+      if (reminderLog.length === 0) {
+        feed.innerHTML = "";
+      }
+
+      const msg = buildMessage(manager, label, hours, level);
+      const html = msg.replace(/\n\n/g, "<br><br>");
+
+      const div = document.createElement("div");
+      div.className = "slack-msg";
+      div.innerHTML = `
+        <div class="flex items-start gap-2.5">
+          <div class="w-8 h-8 rounded-md bg-indigo-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-baseline gap-2">
+              <span class="text-white font-semibold text-sm">Alex Bot</span>
+              <span class="text-gray-500 text-xs">${getSimTime()}</span>
+            </div>
+            <div class="text-gray-300 text-sm mt-1 leading-relaxed">${html}</div>
+          </div>
+        </div>`;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function addSlackSystemMessage(text) {
+      const feed = document.getElementById("slack-feed");
+      const div = document.createElement("div");
+      div.className = "slack-msg";
+      div.innerHTML = `
+        <div class="flex items-center gap-3 py-1">
+          <div class="flex-1 h-px bg-gray-700"></div>
+          <span class="text-xs text-gray-500 flex-shrink-0">${text}</span>
+          <div class="flex-1 h-px bg-gray-700"></div>
+        </div>`;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    // ── ESCALATION LOGIC ────────────────────────────────────────────────────
+    function checkEscalations() {
+      CHANNELS.forEach(ch => {
+        const h = channelElapsed[ch.id];
+        const alreadySent = reminded[ch.id] || 0;
+
+        // Check for reset event
+        if (ch.resetAtHour && h >= ch.resetAtHour && h < ch.resetAtHour + 1 && !ch._didReset) {
+          ch._didReset = true;
+          channelElapsed[ch.id] = 0;
+          delete reminded[ch.id];
+          addSlackSystemMessage(`✅ A team member replied in #${ch.label.toLowerCase().replace(/ /g, "-")} — timer reset`);
+          return;
+        }
+
+        for (const t of THRESHOLDS) {
+          if (h >= t.hours && t.hours > alreadySent) {
+            reminded[ch.id] = t.hours;
+            reminderLog.push({
+              time: getSimTime(),
+              label: ch.label,
+              manager: ch.manager,
+              level: t.level,
+              hours: h,
+            });
+            addSlackMessage(ch.manager, ch.label, h, t.level);
+            break;
+          }
+        }
+      });
+    }
+
+    // ── CONTROLS ────────────────────────────────────────────────────────────
+    function render() {
+      document.getElementById("sim-time").textContent = getSimTime();
+      document.getElementById("elapsed-label").textContent = `Elapsed: ${Math.floor(elapsedHours)}h`;
+      renderCards();
+      renderReminderTable();
+    }
+
+    function advanceTime(hours) {
+      const steps = hours * 4; // quarter-hour resolution
+      for (let i = 0; i < steps; i++) {
+        elapsedHours += 0.25;
+        CHANNELS.forEach(ch => {
+          if (!ch._didReset || channelElapsed[ch.id] > 0 || elapsedHours > (ch.resetAtHour || Infinity) + 1) {
+            channelElapsed[ch.id] += 0.25;
+          }
+        });
+        checkEscalations();
+      }
+      render();
+    }
+
+    function togglePlay() {
+      playing = !playing;
+      const btn = document.getElementById("play-btn");
+      const playIcon = document.getElementById("play-icon");
+      const pauseIcon = document.getElementById("pause-icon");
+      const label = document.getElementById("play-label");
+      const dot = document.getElementById("status-dot");
+
+      if (playing) {
+        playIcon.classList.add("hidden");
+        pauseIcon.classList.remove("hidden");
+        label.textContent = "Pause";
+        dot.classList.remove("bg-green-400");
+        dot.classList.add("bg-yellow-400");
+        playInterval = setInterval(() => advanceTime(1), 3000);
+      } else {
+        playIcon.classList.remove("hidden");
+        pauseIcon.classList.add("hidden");
+        label.textContent = "Play";
+        dot.classList.remove("bg-yellow-400");
+        dot.classList.add("bg-green-400");
+        clearInterval(playInterval);
+      }
+    }
+
+    function resetDemo() {
+      if (playing) togglePlay();
+      initState();
+      CHANNELS.forEach(ch => { delete ch._didReset; });
+      document.getElementById("slack-feed").innerHTML = `
+        <div class="text-center text-xs text-gray-500 py-8">
+          Reminders will appear here as channels escalate...
+        </div>`;
+      render();
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
