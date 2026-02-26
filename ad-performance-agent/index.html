@@ -6,372 +6,172 @@
 <title>ThinkFlow — Ad Performance Agent Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --slack-bg: #1a1d21;
-  --slack-sidebar: #3F0E40;
-  --slack-channel-bg: #222529;
-  --slack-input-bg: #2d2f33;
-  --slack-border: #383b3e;
-  --slack-text: #d1d2d3;
-  --slack-muted: #8c8c8c;
-  --slack-white: #e8e8e8;
-  --slack-green: #2bac76;
-  --slack-link: #1d9bd1;
-  --tf-red: #B22222;
-  --tf-red-bright: #e02d2d;
-  --healthy: #2bac76;
-  --warning: #e5a100;
-  --critical: #e02d2d;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'DM Sans', sans-serif; background: #0a0a0a; color: var(--slack-text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+  :root {
+    --slack-bg: #1a1d21;
+    --slack-sidebar: #19171d;
+    --slack-channel-bg: #222529;
+    --slack-input-bg: #2d2f33;
+    --slack-border: #383b3e;
+    --slack-text: #d1d2d3;
+    --slack-muted: #8c8c8c;
+    --slack-white: #e8e8e8;
+    --slack-green: #2bac76;
+    --slack-link: #5e99d4;
+    --tf-red: #B22222;
+    --tf-red-bright: #e02d2d;
+    --agent-bg: #0d1117;
+    --agent-border: #21262d;
+    --agent-text: #c9d1d9;
+    --agent-green: #3fb950;
+    --agent-blue: #58a6ff;
+    --agent-purple: #bc8cff;
+    --agent-orange: #e3b341;
+    --agent-red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: #0a0a0a; color: var(--slack-text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-/* ── Control Bar ── */
-.control-bar {
-  background: linear-gradient(135deg, #1a0a1e 0%, #120818 100%);
-  border-bottom: 1px solid #2a1a2e;
-  padding: 10px 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.brand { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--tf-red-bright); letter-spacing: 0.05em; }
-.brand span { color: #555; }
-.brand-sub { font-size: 10px; color: #666; font-family: 'IBM Plex Mono', monospace; margin-left: -4px; }
-.ctrl-sep { width: 1px; height: 24px; background: #333; margin: 0 4px; }
-.ctrl-btn {
-  background: #1e1e1e;
-  border: 1px solid #333;
-  color: #ccc;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.ctrl-btn:hover { background: #2a2a2a; border-color: #555; color: #fff; }
-.ctrl-btn.primary { background: var(--tf-red); border-color: var(--tf-red); color: white; }
-.ctrl-btn.primary:hover { background: var(--tf-red-bright); }
-.ctrl-btn.playing { background: #222; border-color: #555; color: #ccc; }
-.time-display {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'IBM Plex Mono', monospace;
-}
-.sim-clock { font-size: 14px; font-weight: 600; color: var(--slack-white); }
-.sim-date { font-size: 10px; color: #666; }
-.step-badge { font-size: 10px; color: #555; background: #1a1a1a; border: 1px solid #2a2a2a; padding: 3px 8px; border-radius: 4px; }
-.state-dot { width: 7px; height: 7px; border-radius: 50%; background: #333; transition: background 0.3s; }
-.state-dot.active { background: var(--healthy); box-shadow: 0 0 6px var(--healthy); animation: pdot 1.5s infinite; }
-@keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .control-bar { background: #111; border-bottom: 1px solid #222; padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .brand { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--tf-red-bright); letter-spacing: 0.05em; margin-right: 4px; }
+  .brand span { color: #444; }
+  .ctrl-btn { background: #1e1e1e; border: 1px solid #333; color: #ccc; padding: 6px 14px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .ctrl-btn:hover { background: #2a2a2a; border-color: #444; color: #fff; }
+  .ctrl-btn.primary { background: var(--tf-red); border-color: var(--tf-red); color: white; }
+  .ctrl-btn.primary:hover { background: var(--tf-red-bright); }
+  .ctrl-btn.paused { background: #2a2a2a; border-color: #555; color: #ccc; }
+  .state-display { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #555; margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .state-dot { width: 7px; height: 7px; border-radius: 50%; background: #333; transition: background 0.3s; }
+  .state-dot.active { background: var(--agent-green); box-shadow: 0 0 6px var(--agent-green); animation: pdot 1.5s infinite; }
+  @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-/* ── Main Layout ── */
-.main-layout { display: grid; grid-template-columns: 1fr 420px; flex: 1; overflow: hidden; }
+  .main-layout { display: grid; grid-template-columns: 1fr 360px; flex: 1; overflow: hidden; }
 
-/* ── Left: Dashboard Panel ── */
-.dashboard {
-  background: #0d0d0f;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.dash-header {
-  padding: 16px 24px 12px;
-  border-bottom: 1px solid #1a1a1e;
-  flex-shrink: 0;
-}
-.dash-title { font-size: 16px; font-weight: 700; color: var(--slack-white); }
-.dash-sub { font-size: 11px; color: #666; margin-top: 2px; }
-.dash-sync { font-size: 10px; color: #555; font-family: 'IBM Plex Mono', monospace; margin-top: 6px; }
-.dash-sync span { color: var(--healthy); }
+  /* ── Slack Panel (Left) ── */
+  .slack-panel { display: flex; flex-direction: column; background: var(--slack-bg); border-right: 1px solid var(--slack-border); overflow: hidden; }
+  .slack-header { background: var(--slack-bg); border-bottom: 1px solid var(--slack-border); padding: 12px 20px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .channel-icon { color: var(--slack-muted); font-size: 16px; }
+  .channel-name { font-weight: 700; font-size: 15px; color: var(--slack-white); }
+  .channel-meta { font-size: 12px; color: var(--slack-muted); margin-left: auto; }
 
-.accounts-grid {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.accounts-grid::-webkit-scrollbar { width: 4px; }
-.accounts-grid::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+  .slack-messages { flex: 1; overflow-y: auto; padding: 16px 0; scroll-behavior: smooth; }
+  .slack-messages::-webkit-scrollbar { width: 4px; }
+  .slack-messages::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 
-.account-card {
-  background: #111114;
-  border: 1px solid #1e1e22;
-  border-radius: 12px;
-  padding: 16px 20px;
-  transition: border-color 0.4s;
-}
-.account-card.card-warning { border-color: rgba(229,161,0,.4); }
-.account-card.card-critical { border-color: rgba(224,45,45,.4); }
+  .msg-group { padding: 4px 20px; display: flex; gap: 12px; opacity: 0; transform: translateY(6px); transition: opacity 0.3s, transform 0.3s; }
+  .msg-group.visible { opacity: 1; transform: translateY(0); }
 
-.account-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.account-icon {
-  width: 38px; height: 38px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: white; flex-shrink: 0;
-}
-.account-info { flex: 1; }
-.account-name { font-weight: 700; font-size: 14px; color: var(--slack-white); }
-.account-platform { font-size: 11px; color: #666; margin-top: 1px; }
-.status-badge {
-  font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
-  text-transform: uppercase; letter-spacing: .06em;
-  transition: all 0.4s;
-}
-.badge-healthy { background: rgba(43,172,118,.12); color: var(--healthy); }
-.badge-warning { background: rgba(229,161,0,.15); color: var(--warning); animation: pulse-warn 2s infinite; }
-.badge-critical { background: rgba(224,45,45,.15); color: var(--critical); animation: pulse-crit 1.2s infinite; }
-@keyframes pulse-warn { 0%,100%{opacity:1} 50%{opacity:.6} }
-@keyframes pulse-crit { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .avatar { width: 36px; height: 36px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; margin-top: 2px; }
+  .msg-content { flex: 1; min-width: 0; }
+  .msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+  .msg-author { font-weight: 700; font-size: 14px; color: var(--slack-white); }
+  .msg-author.bot { color: #5e99d4; }
+  .bot-badge { background: #1a3a5c; color: #5e99d4; font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
+  .msg-time { font-size: 11px; color: var(--slack-muted); }
+  .msg-text { font-size: 14px; line-height: 1.55; color: var(--slack-text); }
+  .msg-text strong { color: var(--slack-white); }
+  .msg-text code { background: #2d2f33; padding: 1px 5px; border-radius: 3px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #e07b9a; }
+  .mention { color: #5e99d4; background: rgba(94,153,212,.1); border-radius: 3px; padding: 0 2px; }
 
-.kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-.kpi-item {
-  background: #0d0d0f;
-  border: 1px solid #1a1a1e;
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-}
-.kpi-label { font-size: 9px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-.kpi-value {
-  font-size: 16px; font-weight: 700; color: var(--slack-white);
-  font-family: 'IBM Plex Mono', monospace;
-  transition: color 0.4s;
-}
-.kpi-value.kpi-down { color: var(--critical); }
-.kpi-value.kpi-up { color: var(--healthy); }
-.kpi-delta {
-  font-size: 9px; font-weight: 600; margin-top: 2px;
-  opacity: 0; transition: opacity 0.4s;
-}
-.kpi-delta.visible { opacity: 1; }
-.kpi-delta.delta-bad { color: var(--critical); }
-.kpi-delta.delta-good { color: var(--healthy); }
+  .msg-reactions { display: flex; gap: 6px; margin-top: 6px; }
+  .reaction { background: rgba(94,153,212,.08); border: 1px solid rgba(94,153,212,.2); border-radius: 12px; padding: 2px 8px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .reaction-count { font-size: 11px; color: var(--slack-link); font-weight: 600; }
 
-.account-budget {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.budget-label { font-size: 10px; color: #555; }
-.budget-bar-bg {
-  flex: 1; height: 4px; background: #1a1a1e; border-radius: 2px; overflow: hidden;
-}
-.budget-bar {
-  height: 100%; border-radius: 2px; transition: width 0.8s, background 0.4s;
-  background: var(--healthy);
-}
-.budget-bar.bar-warning { background: var(--warning); }
-.budget-bar.bar-critical { background: var(--critical); }
-.budget-pct { font-size: 10px; color: #666; font-family: 'IBM Plex Mono', monospace; min-width: 32px; text-align: right; }
+  .perf-report { background: var(--slack-channel-bg); border: 1px solid var(--slack-border); border-radius: 8px; padding: 14px 16px; margin-top: 6px; font-size: 13px; line-height: 1.65; }
+  .perf-report.report-warn { border-left: 3px solid var(--agent-orange); }
+  .perf-report.report-crit { border-left: 3px solid var(--agent-red); }
+  .perf-report.report-ai { border-left: 3px solid var(--agent-purple); }
+  .perf-report.report-ok { border-left: 3px solid var(--slack-green); }
+  .report-header { font-weight: 700; font-size: 14px; color: var(--slack-white); margin-bottom: 2px; }
+  .report-sub { font-size: 11px; color: var(--slack-muted); margin-bottom: 8px; }
+  .report-divider { border: none; border-top: 1px solid var(--slack-border); margin: 9px 0; }
+  .section-title { font-weight: 700; font-size: 10px; letter-spacing: .08em; color: var(--slack-muted); text-transform: uppercase; margin-bottom: 6px; margin-top: 8px; }
+  .metric-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+  .metric-label { color: var(--slack-muted); font-size: 12px; min-width: 88px; }
+  .metric-value { color: var(--slack-white); font-weight: 600; font-size: 13px; }
+  .mtag { font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
+  .mtag-good { background: rgba(43,172,118,.15); color: #2bac76; }
+  .mtag-warn { background: rgba(224,123,45,.15); color: #e07b2d; }
+  .mtag-bad { background: rgba(248,81,73,.15); color: #f85149; }
+  .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0; }
+  .channel-box { background: #1a1d21; border: 1px solid var(--slack-border); border-radius: 6px; padding: 8px 10px; }
+  .channel-label { font-size: 10px; font-weight: 700; color: var(--slack-muted); margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+  .channel-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .callout-row { display: flex; gap: 7px; margin-bottom: 5px; font-size: 13px; line-height: 1.5; }
+  .action-block { background: rgba(94,153,212,.07); border-left: 2px solid #5e99d4; padding: 6px 10px; border-radius: 0 4px 4px 0; margin-bottom: 5px; font-size: 12.5px; }
+  .action-block.action-urgent { border-left-color: var(--agent-red); }
+  .action-block.action-warn { border-left-color: var(--agent-orange); }
+  .action-lbl { font-size: 9px; font-weight: 700; color: #5e99d4; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+  .action-lbl.lbl-urgent { color: var(--agent-red); }
+  .action-lbl.lbl-warn { color: var(--agent-orange); }
+  .bottom-line { background: rgba(43,172,118,.08); border: 1px solid rgba(43,172,118,.2); border-radius: 6px; padding: 8px 12px; font-size: 13px; margin-top: 8px; }
 
-/* ── Right: Slack Panel ── */
-.slack-panel {
-  display: flex;
-  flex-direction: column;
-  background: var(--slack-bg);
-  border-left: 1px solid var(--slack-border);
-  overflow: hidden;
-}
-.slack-header {
-  background: var(--slack-bg);
-  border-bottom: 1px solid var(--slack-border);
-  padding: 12px 18px;
-  flex-shrink: 0;
-}
-.slack-header-top { display: flex; align-items: center; gap: 8px; }
-.channel-hash { color: var(--slack-muted); font-size: 16px; font-weight: 300; }
-.channel-name { font-weight: 700; font-size: 15px; color: var(--slack-white); }
-.slack-header-meta { font-size: 11px; color: var(--slack-muted); margin-top: 2px; }
+  .typing-indicator { display: flex; align-items: center; gap: 8px; padding: 6px 20px; font-size: 12px; color: var(--slack-muted); opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
+  .typing-indicator.visible { opacity: 1; }
+  .typing-dots { display: flex; gap: 3px; align-items: center; }
+  .typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--slack-muted); animation: tbounce 1.2s infinite; }
+  .typing-dots span:nth-child(2){animation-delay:.2s} .typing-dots span:nth-child(3){animation-delay:.4s}
+  @keyframes tbounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
 
-.slack-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0;
-  scroll-behavior: smooth;
-}
-.slack-messages::-webkit-scrollbar { width: 4px; }
-.slack-messages::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  .slack-input-bar { background: var(--slack-bg); border-top: 1px solid var(--slack-border); padding: 12px 20px; flex-shrink: 0; }
+  .slack-input { background: var(--slack-input-bg); border: 1px solid var(--slack-border); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--slack-muted); }
 
-.msg-group {
-  padding: 6px 18px;
-  display: flex;
-  gap: 10px;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.msg-group.visible { opacity: 1; transform: translateY(0); }
+  /* ── Agent Panel (Right) ── */
+  .agent-panel { background: var(--agent-bg); display: flex; flex-direction: column; overflow: hidden; font-family: 'IBM Plex Mono', monospace; }
+  .agent-header { padding: 13px 16px; border-bottom: 1px solid var(--agent-border); flex-shrink: 0; }
+  .agent-title { font-size: 11px; font-weight: 600; color: var(--agent-blue); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+  .agent-sub { font-size: 10px; color: #444; }
+  .agent-feed { flex: 1; overflow-y: auto; padding: 12px; }
+  .agent-feed::-webkit-scrollbar { width: 3px; }
+  .agent-feed::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
 
-.msg-divider {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 18px; opacity: 0; transition: opacity 0.3s;
-}
-.msg-divider.visible { opacity: 1; }
-.msg-divider-line { flex: 1; height: 1px; background: var(--slack-border); }
-.msg-divider-text { font-size: 11px; font-weight: 600; color: var(--slack-muted); white-space: nowrap; }
+  .agent-step { border: 1px solid var(--agent-border); border-radius: 6px; margin-bottom: 7px; overflow: hidden; opacity: 0; transform: translateX(10px); transition: opacity 0.3s, transform 0.3s; }
+  .agent-step.visible { opacity: 1; transform: translateX(0); }
+  .step-header { padding: 7px 10px; display: flex; align-items: center; gap: 8px; }
+  .step-num { width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+  .sn-done { background: rgba(63,185,80,.1); color: var(--agent-green); border: 1px solid rgba(63,185,80,.3); }
+  .sn-warn { background: rgba(227,179,65,.1); color: var(--agent-orange); border: 1px solid rgba(227,179,65,.3); }
+  .sn-error { background: rgba(248,81,73,.1); color: var(--agent-red); border: 1px solid rgba(248,81,73,.3); }
+  .step-lbl { font-size: 11px; color: var(--agent-text); font-weight: 500; flex: 1; }
+  .step-t { font-size: 9px; color: var(--agent-green); }
+  .step-t.t-warn { color: var(--agent-orange); }
+  .step-t.t-err { color: var(--agent-red); }
+  .step-body { padding: 0 10px 8px 35px; font-size: 10px; line-height: 1.6; }
+  .sd { color: #555; }
+  .sd.hi { color: var(--agent-purple); }
+  .sd.ok { color: var(--agent-green); }
+  .sd.wr { color: var(--agent-orange); }
+  .sd.er { color: var(--agent-red); }
 
-.avatar {
-  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 11px; color: white; margin-top: 2px;
-}
-.msg-content { flex: 1; min-width: 0; }
-.msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
-.msg-author { font-weight: 700; font-size: 14px; color: var(--slack-white); }
-.msg-author.bot { color: var(--slack-link); }
-.bot-badge { background: rgba(29,155,209,.15); color: var(--slack-link); font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
-.msg-time { font-size: 11px; color: var(--slack-muted); }
-.msg-text { font-size: 13.5px; line-height: 1.55; color: var(--slack-text); }
-.msg-text strong { color: var(--slack-white); font-weight: 600; }
-.msg-text code { background: #2d2f33; padding: 1px 5px; border-radius: 3px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #e07b9a; }
-.mention { color: var(--slack-link); background: rgba(29,155,209,.1); border-radius: 3px; padding: 0 3px; }
+  .agent-divider { border: none; border-top: 1px solid var(--agent-border); margin: 10px 0 8px; }
+  .phase-badge { background: #0d1117; border: 1px solid var(--agent-border); border-radius: 4px; padding: 6px 10px; font-size: 10px; margin-bottom: 8px; }
+  .pb-label { color: var(--agent-purple); margin-bottom: 2px; }
+  .pb-text { color: #666; line-height: 1.4; }
 
-.msg-reactions { display: flex; gap: 6px; margin-top: 6px; }
-.reaction {
-  background: rgba(29,155,209,.08); border: 1px solid rgba(29,155,209,.2);
-  border-radius: 12px; padding: 2px 8px; font-size: 12px;
-  display: flex; align-items: center; gap: 4px;
-}
-.reaction-count { font-size: 11px; color: var(--slack-link); font-weight: 600; }
-
-/* Report blocks */
-.report-block {
-  background: var(--slack-channel-bg);
-  border-left: 4px solid var(--slack-link);
-  border-radius: 0 8px 8px 0;
-  padding: 14px 16px;
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.report-block.block-warning { border-left-color: var(--warning); }
-.report-block.block-critical { border-left-color: var(--critical); }
-.report-block.block-success { border-left-color: var(--healthy); }
-.report-block.block-ai { border-left-color: #a78bfa; }
-
-.report-title { font-weight: 700; font-size: 14px; color: var(--slack-white); margin-bottom: 2px; }
-.report-sub { font-size: 10px; color: var(--slack-muted); margin-bottom: 8px; }
-.report-divider { border: none; border-top: 1px solid var(--slack-border); margin: 8px 0; }
-.report-section { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--slack-muted); text-transform: uppercase; margin: 8px 0 5px; }
-.report-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; font-size: 12.5px; }
-.report-label { color: var(--slack-muted); min-width: 80px; font-size: 11px; }
-.report-value { color: var(--slack-white); font-weight: 600; }
-.metric-tag { font-size: 9px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
-.tag-good { background: rgba(43,172,118,.12); color: var(--healthy); }
-.tag-warn { background: rgba(229,161,0,.12); color: var(--warning); }
-.tag-bad { background: rgba(224,45,45,.12); color: var(--critical); }
-
-.callout { display: flex; gap: 6px; margin-bottom: 4px; font-size: 12.5px; line-height: 1.45; }
-.action-item {
-  background: rgba(29,155,209,.06);
-  border-left: 2px solid var(--slack-link);
-  padding: 6px 10px;
-  border-radius: 0 4px 4px 0;
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-.action-label { font-size: 9px; font-weight: 700; color: var(--slack-link); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1px; }
-
-.ai-block {
-  background: rgba(167,139,250,.06);
-  border-left: 3px solid #a78bfa;
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
-  margin-top: 6px;
-}
-.ai-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-.ai-icon { font-size: 14px; }
-.ai-label { font-size: 10px; font-weight: 700; color: #a78bfa; letter-spacing: .06em; text-transform: uppercase; }
-.ai-text { font-size: 12.5px; line-height: 1.55; color: var(--slack-text); }
-
-.typing-indicator {
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 18px; font-size: 12px; color: var(--slack-muted);
-  opacity: 0; transition: opacity 0.2s; flex-shrink: 0;
-}
-.typing-indicator.visible { opacity: 1; }
-.typing-dots { display: flex; gap: 3px; }
-.typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--slack-muted); animation: tbounce 1.2s infinite; }
-.typing-dots span:nth-child(2){animation-delay:.2s} .typing-dots span:nth-child(3){animation-delay:.4s}
-@keyframes tbounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
-
-.slack-input-bar { background: var(--slack-bg); border-top: 1px solid var(--slack-border); padding: 10px 18px; flex-shrink: 0; }
-.slack-input { background: var(--slack-input-bg); border: 1px solid var(--slack-border); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--slack-muted); }
-
-/* ── Bottom Status Bar ── */
-.status-bar {
-  background: linear-gradient(90deg, var(--tf-red) 0%, #8b1a1a 100%);
-  padding: 5px 24px;
-  font-size: 10px;
-  font-family: 'IBM Plex Mono', monospace;
-  color: rgba(255,255,255,.6);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-}
-.status-bar span { color: white; }
-
-/* ── Animations ── */
-@keyframes flash-in { from { background: rgba(229,161,0,.15); } to { background: transparent; } }
-.kpi-flash { animation: flash-in 1s ease; }
+  .status-bar { background: var(--tf-red); padding: 4px 20px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,.65); display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .status-bar span { color: white; }
 </style>
 </head>
 <body>
 
-<!-- Control Bar -->
 <div class="control-bar">
-  <div>
-    <div class="brand">THINKFLOW<span>/</span>AD PERFORMANCE AGENT</div>
-    <div class="brand-sub">Interactive Sales Demo</div>
-  </div>
-  <div class="ctrl-sep"></div>
+  <div class="brand">THINKFLOW<span>/</span>AD PERFORMANCE AGENT</div>
   <button class="ctrl-btn primary" id="playBtn" onclick="togglePlay()">&#9654; Play Demo</button>
   <button class="ctrl-btn" onclick="stepForward()">+1 Step</button>
   <button class="ctrl-btn" onclick="skipToAlert()">Skip to Alert &#8594;</button>
-  <button class="ctrl-btn" onclick="skipToResolution()">Skip to Resolution &#8594;</button>
+  <button class="ctrl-btn" onclick="skipToResolution()">Resolution &#8594;</button>
   <button class="ctrl-btn" onclick="resetDemo()">&#8634; Reset</button>
-  <div class="time-display">
+  <div class="state-display">
     <div class="state-dot" id="stateDot"></div>
-    <div>
-      <div class="sim-clock" id="simClock">7:59 AM</div>
-      <div class="sim-date">Today &middot; Tuesday</div>
-    </div>
-    <div class="step-badge" id="stepBadge">Step 0 / 8</div>
+    <span id="stateLabel">Ready &#8212; click Play</span>
   </div>
 </div>
 
-<!-- Main Layout -->
 <div class="main-layout">
-
-  <!-- Left: Dashboard -->
-  <div class="dashboard">
-    <div class="dash-header">
-      <div class="dash-title">Client Ad Accounts</div>
-      <div class="dash-sub">ThinkFlow Ad Performance Agent &mdash; Monitoring 3 accounts across Meta &amp; Google Ads</div>
-      <div class="dash-sync">Last synced: <span id="syncTime">Today 7:59 AM</span></div>
-    </div>
-    <div class="accounts-grid" id="accountsGrid"></div>
-  </div>
-
-  <!-- Right: Slack Panel -->
   <div class="slack-panel">
     <div class="slack-header">
-      <div class="slack-header-top">
-        <span class="channel-hash">#</span>
-        <span class="channel-name">ad-performance-alerts</span>
-      </div>
-      <div class="slack-header-meta">&#128101; 8 members &middot; Drip Digital Media workspace</div>
+      <span class="channel-icon">#</span>
+      <span class="channel-name">ad-performance-alerts</span>
+      <div class="channel-meta">&#128101; 8 members &middot; Drip Digital Media</div>
     </div>
     <div class="slack-messages" id="slackMessages"></div>
     <div class="typing-indicator" id="typingEl">
@@ -382,491 +182,412 @@ body { font-family: 'DM Sans', sans-serif; background: #0a0a0a; color: var(--sla
       <div class="slack-input">&#128172; Message #ad-performance-alerts</div>
     </div>
   </div>
+
+  <div class="agent-panel">
+    <div class="agent-header">
+      <div class="agent-title">// Agent Activity</div>
+      <div class="agent-sub">Real-time execution trace</div>
+    </div>
+    <div class="agent-feed" id="agentFeed"></div>
+  </div>
 </div>
 
 <div class="status-bar">
-  ThinkFlow Intelligence &nbsp;&middot;&nbsp; AI Model: <span>Claude Opus</span> &nbsp;&middot;&nbsp; Platforms: <span>Meta Ads + Google Ads</span> &nbsp;&middot;&nbsp; Monitoring: <span>3 accounts</span> &nbsp;&middot;&nbsp; Status: <span id="engineStatus">Idle</span>
+  ThinkFlow Intelligence &nbsp;&middot;&nbsp; Model: <span>claude-opus-4-6</span> &nbsp;&middot;&nbsp; Platforms: <span>Meta Ads + Google Ads</span> &nbsp;&middot;&nbsp; Accounts: <span>3 monitored</span> &nbsp;&middot;&nbsp; Status: <span id="engineStatus">Idle</span>
 </div>
 
 <script>
-// ── Client Account Data ──
-const ACCOUNTS = [
+// ═══════════════════════════════════════════════════════
+// SIMULATION DATA — 8 phases, each with agent steps + slack message
+// ═══════════════════════════════════════════════════════
+
+const PHASES = [
+  // ── Phase 0: Daily Digest ──
   {
-    id: 'apex',
-    name: 'Apex Roofing',
-    platform: 'Meta Ads',
-    platformIcon: '&#xf09a;',
-    color: '#1877f2',
-    budget: 5000,
-    initial: { spend: '$2,340', roas: '3.2x', cpa: '$38', ctr: '2.4%', impr: '124K' },
-    warning: { spend: '$2,890', roas: '2.1x', cpa: '$56', ctr: '1.6%', impr: '131K' },
-    recovered: { spend: '$3,010', roas: '3.4x', cpa: '$35', ctr: '2.6%', impr: '138K' },
-    budgetPct: [47, 58, 60],
+    label: "SCHEDULED DAILY DIGEST",
+    desc: "8:00 AM — Automated morning sync",
+    steps: [
+      { lbl:"Cron trigger — daily digest", t:"0.0s", cls:"done", details:["schedule: 0 8 * * *","trigger: automated"], hi:false },
+      { lbl:"Syncing Meta Ads API", t:"1.2s", cls:"done", details:["accounts: 2 (Apex Roofing, Ironclad HVAC)","campaigns: 14 active","rows fetched: 286"], hi:false },
+      { lbl:"Syncing Google Ads API", t:"0.9s", cls:"done", details:["accounts: 2 (Vela Skincare, Ironclad HVAC)","campaigns: 11 active","rows fetched: 201"], hi:false },
+      { lbl:"Running threshold checks", t:"0.3s", cls:"done", details:["CPA thresholds: all pass ✓","ROAS thresholds: all pass ✓","CTR thresholds: all pass ✓","budget pacing: all on track ✓"], hi:true },
+      { lbl:"Generating digest via Claude", t:"2.4s", cls:"done", details:["model: claude-opus-4-6","tokens in: 1,480","tokens out: 420","status: all healthy ✓"], hi:true },
+      { lbl:"Posting to #ad-performance-alerts", t:"0.2s", cls:"done", details:["message delivered ✓","channel: #ad-performance-alerts"], hi:false },
+    ],
+    slack: {
+      time: "8:02 AM",
+      html: `<div class="perf-report">
+        <div class="report-header">&#128202; Daily Performance Digest</div>
+        <div class="report-sub">Tuesday 8:00 AM &middot; All accounts synced &middot; ThinkFlow Ad Performance Agent</div>
+        <hr class="report-divider">
+        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px">Good morning! All <strong>3 client accounts</strong> are performing within target thresholds.</div>
+        <hr class="report-divider">
+        <div class="section-title">Account Summary</div>
+        <div class="channel-grid">
+          <div class="channel-box">
+            <div class="channel-label"><span class="channel-dot" style="background:#1877f2"></span>APEX ROOFING</div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">Platform</span><span class="metric-value" style="font-size:12px">Meta Ads</span></div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">ROAS</span><span class="metric-value" style="font-size:12px">3.2x</span></div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CPA</span><span class="metric-value" style="font-size:12px">$38</span></div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CTR</span><span class="metric-value" style="font-size:12px">2.4%</span></div>
+            <span class="mtag mtag-good" style="margin-top:4px;display:inline-block">&#9679; Healthy</span>
+          </div>
+          <div class="channel-box">
+            <div class="channel-label"><span class="channel-dot" style="background:#4285f4"></span>VELA SKINCARE</div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">Platform</span><span class="metric-value" style="font-size:12px">Google Ads</span></div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">ROAS</span><span class="metric-value" style="font-size:12px">4.1x</span></div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CPA</span><span class="metric-value" style="font-size:12px">$29</span></div>
+            <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CTR</span><span class="metric-value" style="font-size:12px">3.1%</span></div>
+            <span class="mtag mtag-good" style="margin-top:4px;display:inline-block">&#9679; Healthy</span>
+          </div>
+        </div>
+        <div class="channel-grid" style="grid-template-columns:1fr">
+          <div class="channel-box">
+            <div class="channel-label"><span class="channel-dot" style="background:#16a34a"></span>IRONCLAD HVAC</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">Platforms</span><span class="metric-value" style="font-size:12px">Meta + Google</span></div>
+              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">ROAS</span><span class="metric-value" style="font-size:12px">3.6x</span></div>
+              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CPA</span><span class="metric-value" style="font-size:12px">$42</span></div>
+              <div class="metric-row" style="margin-bottom:2px"><span class="metric-label" style="font-size:11px">CTR</span><span class="metric-value" style="font-size:12px">2.2%</span></div>
+            </div>
+            <span class="mtag mtag-good" style="margin-top:4px;display:inline-block">&#9679; Healthy</span>
+          </div>
+        </div>
+        <hr class="report-divider">
+        <div style="font-size:12px;color:#2bac76">&#128994; No anomalies detected. All budgets on pace. Next check in 2 hours.</div>
+      </div>`,
+      reactions: [{e:"&#128077;",c:3},{e:"&#9749;",c:2}]
+    }
   },
+
+  // ── Phase 1: Apex CPA spike detected ──
   {
-    id: 'vela',
-    name: 'Vela Skincare',
-    platform: 'Google Ads',
-    color: '#4285f4',
-    budget: 12000,
-    initial: { spend: '$5,680', roas: '4.1x', cpa: '$29', ctr: '3.1%', impr: '287K' },
-    critical: { spend: '$6,120', roas: '2.8x', cpa: '$44', ctr: '1.8%', impr: '301K' },
-    recovered: { spend: '$6,450', roas: '4.3x', cpa: '$27', ctr: '3.3%', impr: '315K' },
-    budgetPct: [47, 51, 54],
+    label: "ANOMALY DETECTION — APEX ROOFING",
+    desc: "10:14 AM — Mid-morning monitoring cycle",
+    steps: [
+      { lbl:"Scheduled monitoring check", t:"0.0s", cls:"done", details:["trigger: every 2 hours","cycle: mid-morning"], hi:false },
+      { lbl:"Syncing Apex Roofing — Meta Ads", t:"0.8s", cls:"done", details:["campaigns: 6 active","spend since 8AM: +$550","rows: 94"], hi:false },
+      { lbl:"Running threshold comparison", t:"0.2s", cls:"warn", details:["CPA: $56.00 vs $38.00 target → +47% ⚠","ROAS: 2.1x vs 2.5x floor → BREACH ⚠","CTR: 1.6% vs 2.0% baseline → -33% ⚠"], hi:true },
+      { lbl:"Anomaly confirmed — severity: WARNING", t:"0.1s", cls:"warn", details:["account: Apex Roofing","threshold breaches: 3","escalation level: warning"], hi:false },
+    ],
+    slack: null // no slack message yet — just agent detection
   },
+
+  // ── Phase 2: Anomaly alert posted to Slack ──
   {
-    id: 'ironclad',
-    name: 'Ironclad HVAC',
-    platform: 'Meta + Google Ads',
-    color: '#16a34a',
-    budget: 8000,
-    initial: { spend: '$3,720', roas: '3.6x', cpa: '$42', ctr: '2.2%', impr: '198K' },
-    budgetPct: [47, 47, 47],
-  }
+    label: "POSTING ANOMALY ALERT",
+    desc: "10:15 AM — Alert dispatched to Slack",
+    steps: [
+      { lbl:"Composing alert message", t:"0.3s", cls:"done", details:["severity: warning","metrics attached: CPA, ROAS, CTR, spend","format: structured block"], hi:false },
+      { lbl:"Posting to #ad-performance-alerts", t:"0.2s", cls:"done", details:["message delivered ✓","reactions enabled"], hi:false },
+      { lbl:"Triggering AI root cause analysis", t:"0.1s", cls:"done", details:["queuing Claude analysis...","priority: high"], hi:true },
+    ],
+    slack: {
+      time: "10:15 AM",
+      html: `<div class="perf-report report-warn">
+        <div class="report-header">&#9888;&#65039; Anomaly Detected &#8212; Apex Roofing</div>
+        <div class="report-sub">Meta Ads &middot; Detected at 10:14 AM &middot; Severity: Warning</div>
+        <hr class="report-divider">
+        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px"><strong>CPA has spiked 47% above target</strong> in the last 4 hours. Multiple metrics are degrading simultaneously.</div>
+        <hr class="report-divider">
+        <div class="section-title">Metric Breakdown</div>
+        <div class="metric-row"><span class="metric-label">CPA</span><span class="metric-value">$56.00</span><span class="mtag mtag-bad">+47% above $38 target</span></div>
+        <div class="metric-row"><span class="metric-label">ROAS</span><span class="metric-value">2.1x</span><span class="mtag mtag-bad">below 2.5x floor</span></div>
+        <div class="metric-row"><span class="metric-label">CTR</span><span class="metric-value">1.6%</span><span class="mtag mtag-warn">-33% from baseline</span></div>
+        <div class="metric-row"><span class="metric-label">MTD Spend</span><span class="metric-value">$2,890</span><span class="mtag mtag-warn">58% of $5K budget</span></div>
+        <hr class="report-divider">
+        <div style="font-size:12px;color:#e3b341">&#128300; Running AI analysis to identify root cause...</div>
+      </div>`,
+      reactions: [{e:"&#128064;",c:4}]
+    }
+  },
+
+  // ── Phase 3: Claude AI analysis ──
+  {
+    label: "CLAUDE AI ROOT CAUSE ANALYSIS",
+    desc: "10:16 AM — Deep analysis running",
+    steps: [
+      { lbl:"Pulling historical performance data", t:"0.6s", cls:"done", details:["date_range: last 30 days","ad_set breakdown: 4 sets","creative performance: 12 ads"], hi:false },
+      { lbl:"Fetching frequency & fatigue signals", t:"0.4s", cls:"done", details:["top ad set frequency: 4.7x","creative age: 18 days","CTR trend: declining"], hi:true },
+      { lbl:"Generating analysis via Claude", t:"3.2s", cls:"done", details:["model: claude-opus-4-6","tokens in: 2,340","tokens out: 580","root cause identified ✓","confidence: 92%"], hi:true },
+      { lbl:"Posting analysis to Slack", t:"0.2s", cls:"done", details:["threaded to alert ✓","message delivered ✓"], hi:false },
+    ],
+    slack: {
+      time: "10:17 AM",
+      html: `<div class="perf-report report-ai">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+          <span style="font-size:16px">&#129302;</span>
+          <span style="font-size:10px;font-weight:700;color:#bc8cff;letter-spacing:.06em;text-transform:uppercase">Claude AI Analysis</span>
+        </div>
+        <div style="font-size:13px;color:#d1d2d3;line-height:1.6">
+          <strong>Root cause identified: Creative fatigue on top-performing ad set.</strong><br><br>
+          The primary ad set <code>"Roof Repair - Homeowners 35-65"</code> has been running the same 3 creatives for 18 days. Frequency has reached <strong>4.7x</strong> (threshold: 3.0x), causing CTR to decline from 2.4% to 1.6%.<br><br>
+          <div class="section-title">Contributing Factors</div>
+          <div class="callout-row"><span>&#128308;</span><span>Ad set frequency 4.7x &#8212; audience is oversaturated</span></div>
+          <div class="callout-row"><span>&#128308;</span><span>No new creatives added in 18 days</span></div>
+          <div class="callout-row"><span>&#128308;</span><span>Top creative CTR dropped 52% in last 7 days</span></div>
+          <div class="callout-row"><span>&#128993;</span><span>Cost per result increasing on a 3-day rolling average</span></div>
+          <hr class="report-divider">
+          <div style="font-size:12px;color:#bc8cff"><strong>Confidence:</strong> High (92%) &#8212; pattern matches creative fatigue profile across 140+ similar accounts.</div>
+        </div>
+      </div>`,
+      reactions: [{e:"&#129504;",c:3},{e:"&#128175;",c:2}]
+    }
+  },
+
+  // ── Phase 4: Recommended action ──
+  {
+    label: "GENERATING RECOMMENDATIONS",
+    desc: "10:17 AM — Action plan ready",
+    steps: [
+      { lbl:"Scoring ad set performance", t:"0.4s", cls:"done", details:["best performer: Emergency Roof - Storm Season","CPA: $31 (vs $56 on fatigued set)","CTR: 2.9% — healthy"], hi:true },
+      { lbl:"Building reallocation plan", t:"0.3s", cls:"done", details:["source: Roof Repair ad set → pause","destination: Storm Season → +$800/day","estimated CPA recovery: $35-38"], hi:true },
+      { lbl:"Posting recommendations", t:"0.2s", cls:"done", details:["3 action items attached","awaiting team approval"], hi:false },
+    ],
+    slack: {
+      time: "10:17 AM",
+      html: `<div class="perf-report">
+        <div class="report-header">&#128161; Recommended Actions &#8212; Apex Roofing</div>
+        <hr class="report-divider">
+        <div class="action-block action-urgent"><div class="action-lbl lbl-urgent">Immediate</div>Pause ad set <code>"Roof Repair - Homeowners 35-65"</code> &#8212; it's burning budget at a $56 CPA with no signs of recovery.</div>
+        <div class="action-block action-warn"><div class="action-lbl lbl-warn">Today</div>Reallocate $800 daily budget to ad set <code>"Emergency Roof - Storm Season"</code> which is holding a $31 CPA and 2.9% CTR.</div>
+        <div class="action-block"><div class="action-lbl">This Week</div>Brief creative team on 3&#8211;4 new video variants for the fatigued audience. UGC testimonial format recommended based on vertical benchmarks.</div>
+        <hr class="report-divider">
+        <div style="font-size:12px;color:var(--slack-muted)">&#128172; Reply <strong>approve</strong> to let ThinkFlow execute the pause + reallocation, or <strong>dismiss</strong> to take manual action.</div>
+      </div>`,
+      reactions: [{e:"&#9989;",c:2},{e:"&#128588;",c:1}]
+    }
+  },
+
+  // ── Phase 5: Vela Skincare CTR drop ──
+  {
+    label: "ANOMALY DETECTION — VELA SKINCARE",
+    desc: "1:32 PM — Afternoon monitoring cycle",
+    steps: [
+      { lbl:"Scheduled monitoring check", t:"0.0s", cls:"done", details:["trigger: every 2 hours","cycle: afternoon"], hi:false },
+      { lbl:"Syncing Vela Skincare — Google Ads", t:"0.7s", cls:"done", details:["campaigns: 6 active","spend since 8AM: +$440","rows: 112"], hi:false },
+      { lbl:"Running threshold comparison", t:"0.2s", cls:"error", details:["CTR: 1.8% vs 3.1% baseline → -42% ⚠","CPA: $44 vs $29 target → +52% ⚠","ROAS: 2.8x vs 3.5x floor → BREACH ⚠","impression share: 52% (was 78%)"], hi:true },
+      { lbl:"CRITICAL anomaly confirmed", t:"0.1s", cls:"error", details:["account: Vela Skincare","severity: CRITICAL","breaches: 3 metrics","escalation: @channel"], hi:false },
+      { lbl:"Running rapid AI assessment", t:"2.1s", cls:"done", details:["model: claude-opus-4-6","tokens in: 1,890","tokens out: 440","competitor surge detected ✓"], hi:true },
+    ],
+    slack: null
+  },
+
+  // ── Phase 6: Escalation alert ──
+  {
+    label: "CRITICAL ESCALATION",
+    desc: "1:33 PM — Urgent alert dispatched",
+    steps: [
+      { lbl:"Composing escalation message", t:"0.2s", cls:"error", details:["severity: CRITICAL","tag: @channel","AI assessment: attached"], hi:false },
+      { lbl:"Posting URGENT to Slack", t:"0.2s", cls:"done", details:["message delivered ✓","@channel notified","priority: critical"], hi:false },
+    ],
+    slack: {
+      time: "1:33 PM",
+      html: `<div class="perf-report report-crit">
+        <div class="report-header">&#128680; URGENT: Vela Skincare &#8212; Critical Alert</div>
+        <div class="report-sub">Google Ads &middot; Detected at 1:32 PM &middot; Severity: Critical</div>
+        <hr class="report-divider">
+        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:6px"><span class="mention">@channel</span> <strong>Vela Skincare Google Ads CTR has dropped 42%</strong> in the last 3 hours. Account status escalated to <strong style="color:#f85149">Critical</strong>.</div>
+        <hr class="report-divider">
+        <div class="section-title">Metric Breakdown</div>
+        <div class="metric-row"><span class="metric-label">CTR</span><span class="metric-value">1.8%</span><span class="mtag mtag-bad">was 3.1% at 8AM</span></div>
+        <div class="metric-row"><span class="metric-label">CPA</span><span class="metric-value">$44.00</span><span class="mtag mtag-bad">+52% above $29 target</span></div>
+        <div class="metric-row"><span class="metric-label">ROAS</span><span class="metric-value">2.8x</span><span class="mtag mtag-warn">below 3.5x floor</span></div>
+        <div class="metric-row"><span class="metric-label">Impr. Share</span><span class="metric-value">52%</span><span class="mtag mtag-bad">was 78% at 8AM</span></div>
+        <hr class="report-divider">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="font-size:14px">&#129302;</span><span style="font-size:10px;font-weight:700;color:#bc8cff;letter-spacing:.06em;text-transform:uppercase">Claude AI &#8212; Rapid Assessment</span></div>
+        <div style="font-size:13px;color:#d1d2d3;line-height:1.5">
+          <strong>Likely cause: Competitor bidding surge on core branded terms.</strong> Google Auction Insights show a new competitor entering Vela's top keywords in the last 4 hours. Impression share dropped from 78% to 52%.<br><br>
+          <strong>Recommended:</strong> Increase bids 15&#8211;20% on top 5 converting keywords. Add negative keywords for irrelevant new search terms detected.
+        </div>
+      </div>`,
+      reactions: [{e:"&#128680;",c:5},{e:"&#128064;",c:3}]
+    }
+  },
+
+  // ── Phase 7: Recovery ──
+  {
+    label: "RECOVERY CONFIRMATION",
+    desc: "3:45 PM — Actions executed, accounts recovering",
+    steps: [
+      { lbl:"Apex Roofing — action executed", t:"0.3s", cls:"done", details:["ad set paused: Roof Repair - Homeowners","budget reallocated: +$800 to Storm Season","new CPA: $35 (recovered ✓)","new ROAS: 3.4x (recovered ✓)"], hi:true },
+      { lbl:"Vela Skincare — action executed", t:"0.3s", cls:"done", details:["keyword bids adjusted: +18%","negative keywords added: 12 terms","new CPA: $27 (recovered ✓)","new CTR: 3.3% (recovered ✓)"], hi:true },
+      { lbl:"All accounts re-verified healthy", t:"0.4s", cls:"done", details:["Apex Roofing: HEALTHY ✓","Vela Skincare: HEALTHY ✓","Ironclad HVAC: HEALTHY ✓ (no change)"], hi:true },
+      { lbl:"Posting recovery summary", t:"0.2s", cls:"done", details:["message delivered ✓","savings calculated: $1,840"], hi:false },
+    ],
+    slack: {
+      time: "3:45 PM",
+      html: `<div class="perf-report report-ok">
+        <div class="report-header">&#9989; All Accounts Recovered</div>
+        <div class="report-sub">Status update &middot; 3:45 PM &middot; All accounts back to Healthy</div>
+        <hr class="report-divider">
+        <div style="font-size:13px;color:#d1d2d3;line-height:1.5;margin-bottom:8px">Actions executed successfully. Both flagged accounts have returned to healthy performance:</div>
+        <div style="background:rgba(43,172,118,.06);border-radius:6px;padding:10px 12px;margin-bottom:8px">
+          <div style="font-weight:700;color:#e8e8e8;font-size:13px;margin-bottom:4px">&#128994; Apex Roofing &#8212; Recovered</div>
+          <div style="font-size:12px;color:#d1d2d3;line-height:1.5">Fatigued ad set paused. Budget reallocated to <code>"Emergency Roof - Storm Season"</code>.<br>CPA recovered from $56 &#8594; <strong style="color:#2bac76">$35</strong> &middot; ROAS back to <strong style="color:#2bac76">3.4x</strong></div>
+        </div>
+        <div style="background:rgba(43,172,118,.06);border-radius:6px;padding:10px 12px;margin-bottom:8px">
+          <div style="font-weight:700;color:#e8e8e8;font-size:13px;margin-bottom:4px">&#128994; Vela Skincare &#8212; Recovered</div>
+          <div style="font-size:12px;color:#d1d2d3;line-height:1.5">Keyword bids adjusted +18%. Negative keywords added for competitor terms.<br>CPA recovered from $44 &#8594; <strong style="color:#2bac76">$27</strong> &middot; CTR back to <strong style="color:#2bac76">3.3%</strong></div>
+        </div>
+        <hr class="report-divider">
+        <div class="bottom-line"><strong style="color:#2bac76">IMPACT TODAY</strong><br>ThinkFlow detected and resolved 2 performance anomalies within minutes, preventing an estimated <strong style="color:#e8e8e8">$1,840 in wasted ad spend</strong> across both accounts.</div>
+      </div>`,
+      reactions: [{e:"&#127881;",c:6},{e:"&#128640;",c:4},{e:"&#128154;",c:3}]
+    }
+  },
 ];
 
-// ── Simulation Times ──
-const TIMES = ['8:00 AM','8:02 AM','10:14 AM','10:15 AM','10:17 AM','1:32 PM','1:33 PM','3:45 PM'];
+// ═══════════════════════════════════════════════════════
+// Build flat step index — each phase has N agent steps + optional slack msg
+// ═══════════════════════════════════════════════════════
+let phaseStarts = [];
+let totalSteps = 0;
+PHASES.forEach((p, i) => {
+  phaseStarts[i] = totalSteps;
+  totalSteps += p.steps.length + (p.slack ? 1 : 0);
+});
 
-// ── Simulation Steps (0-indexed) ──
-// Step 0: Daily digest — all healthy
-// Step 1: Apex CPA spike — warning
-// Step 2: Anomaly alert to Slack
-// Step 3: Claude AI analysis
-// Step 4: Recommended action
-// Step 5: Vela CTR drop — critical
-// Step 6: Escalation alert
-// Step 7: Recovery — all healthy again
-
-let currentStep = -1;
+let g = 0;
 let playing = false;
-let playInterval = null;
+let iv = null;
 
-function init() {
-  renderAccounts('initial');
-  updateClock(-1);
-}
-
-function renderAccounts(state) {
-  const grid = document.getElementById('accountsGrid');
-  grid.innerHTML = '';
-  ACCOUNTS.forEach(acc => {
-    const card = document.createElement('div');
-    card.className = 'account-card';
-    card.id = `card-${acc.id}`;
-
-    let status, badgeClass, data, budgetIdx, cardClass;
-    if (state === 'initial' || (state !== 'warning' && state !== 'critical' && state !== 'recovered')) {
-      status = 'Healthy'; badgeClass = 'badge-healthy'; data = acc.initial; budgetIdx = 0; cardClass = '';
-    }
-    // will be set per-step via updateAccount
-    const bPct = acc.budgetPct[budgetIdx || 0];
-
-    card.innerHTML = `
-      <div class="account-top">
-        <div class="account-icon" style="background:${acc.color}">${acc.name.split(' ').map(w=>w[0]).join('')}</div>
-        <div class="account-info">
-          <div class="account-name">${acc.name}</div>
-          <div class="account-platform">${acc.platform} &middot; $${(acc.budget/1000).toFixed(0)}K/mo budget</div>
-        </div>
-        <div class="status-badge badge-healthy" id="badge-${acc.id}">&#9679; Healthy</div>
-      </div>
-      <div class="kpi-grid">
-        ${kpiHTML(acc, data)}
-      </div>
-      <div class="account-budget">
-        <span class="budget-label">MTD Pace</span>
-        <div class="budget-bar-bg"><div class="budget-bar" id="bar-${acc.id}" style="width:${bPct}%"></div></div>
-        <span class="budget-pct" id="pct-${acc.id}">${bPct}%</span>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-function kpiHTML(acc, data) {
-  const keys = ['spend','roas','cpa','ctr','impr'];
-  const labels = ['Spend','ROAS','CPA','CTR','Impr.'];
-  return keys.map((k,i) => `
-    <div class="kpi-item" id="kpi-${acc.id}-${k}">
-      <div class="kpi-label">${labels[i]}</div>
-      <div class="kpi-value" id="val-${acc.id}-${k}">${data[k]}</div>
-      <div class="kpi-delta" id="delta-${acc.id}-${k}"></div>
-    </div>
-  `).join('');
-}
-
-function updateAccount(accId, newData, statusText, badgeClass, cardClass, budgetIdx, deltas) {
-  const card = document.getElementById(`card-${accId}`);
-  const badge = document.getElementById(`badge-${accId}`);
-  if (card) { card.className = 'account-card' + (cardClass ? ' ' + cardClass : ''); }
-  if (badge) {
-    badge.className = 'status-badge ' + badgeClass;
-    badge.innerHTML = (badgeClass === 'badge-healthy' ? '&#9679; ' : badgeClass === 'badge-warning' ? '&#9888; ' : '&#9888; ') + statusText;
+function getPhase(step) {
+  for (let i = PHASES.length - 1; i >= 0; i--) {
+    if (step >= phaseStarts[i]) return { pi: i, local: step - phaseStarts[i] };
   }
-
-  const keys = ['spend','roas','cpa','ctr','impr'];
-  keys.forEach(k => {
-    const valEl = document.getElementById(`val-${accId}-${k}`);
-    const deltaEl = document.getElementById(`delta-${accId}-${k}`);
-    const kpiEl = document.getElementById(`kpi-${accId}-${k}`);
-    if (valEl && newData[k]) {
-      valEl.textContent = newData[k];
-      if (deltas && deltas[k]) {
-        valEl.className = 'kpi-value ' + (deltas[k].bad ? 'kpi-down' : 'kpi-up');
-        deltaEl.textContent = deltas[k].text;
-        deltaEl.className = 'kpi-delta visible ' + (deltas[k].bad ? 'delta-bad' : 'delta-good');
-      } else {
-        valEl.className = 'kpi-value';
-        deltaEl.className = 'kpi-delta';
-        deltaEl.textContent = '';
-      }
-      if (kpiEl) { kpiEl.classList.add('kpi-flash'); setTimeout(() => kpiEl.classList.remove('kpi-flash'), 1100); }
-    }
-  });
-
-  const acc = ACCOUNTS.find(a => a.id === accId);
-  const bar = document.getElementById(`bar-${accId}`);
-  const pct = document.getElementById(`pct-${accId}`);
-  if (bar && acc) {
-    const p = acc.budgetPct[budgetIdx] || acc.budgetPct[0];
-    bar.style.width = p + '%';
-    bar.className = 'budget-bar' + (badgeClass === 'badge-warning' ? ' bar-warning' : badgeClass === 'badge-critical' ? ' bar-critical' : '');
-    if (pct) pct.textContent = p + '%';
-  }
+  return { pi: 0, local: 0 };
 }
 
-function updateClock(step) {
-  const clock = document.getElementById('simClock');
-  const sync = document.getElementById('syncTime');
-  const badge = document.getElementById('stepBadge');
-  if (step < 0) {
-    clock.textContent = '7:59 AM';
-    sync.textContent = 'Today 7:59 AM';
-    badge.textContent = 'Step 0 / 8';
-    return;
-  }
-  const t = TIMES[Math.min(step, TIMES.length-1)];
-  clock.textContent = t;
-  sync.textContent = 'Today ' + t;
-  badge.textContent = `Step ${step+1} / 8`;
-}
-
-// ── Slack Message Builders ──
-function addSlackMsg(html) {
-  const container = document.getElementById('slackMessages');
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = html;
-  const el = wrapper.firstElementChild;
-  container.appendChild(el);
-  setTimeout(() => { el.classList.add('visible'); scrollSlack(); }, 30);
-}
-
-function scrollSlack() {
-  const el = document.getElementById('slackMessages');
-  el.scrollTop = el.scrollHeight;
-}
-
-function showTyping(show) {
-  document.getElementById('typingEl').classList.toggle('visible', show);
-}
-
-function botMsg(time, bodyHTML, reactions) {
-  let reactHTML = '';
-  if (reactions) {
-    reactHTML = '<div class="msg-reactions">' + reactions.map(r => `<div class="reaction">${r.emoji} <span class="reaction-count">${r.count}</span></div>`).join('') + '</div>';
-  }
-  return `<div class="msg-group">
-    <div class="avatar" style="background:var(--tf-red);font-size:9px;font-weight:800;letter-spacing:.5px">TF</div>
-    <div class="msg-content">
-      <div class="msg-header">
-        <span class="msg-author bot">ThinkFlow Agent</span>
-        <span class="bot-badge">APP</span>
-        <span class="msg-time">${time}</span>
-      </div>
-      ${bodyHTML}
-      ${reactHTML}
-    </div>
-  </div>`;
-}
-
-function dividerMsg(text) {
-  return `<div class="msg-divider"><div class="msg-divider-line"></div><div class="msg-divider-text">${text}</div><div class="msg-divider-line"></div></div>`;
-}
-
-// ── Step Execution ──
-function executeStep(step) {
-  currentStep = step;
-  updateClock(step);
-  showTyping(false);
-
-  switch(step) {
-    case 0: stepDailyDigest(); break;
-    case 1: stepApexWarning(); break;
-    case 2: stepAnomalyAlert(); break;
-    case 3: stepClaudeAnalysis(); break;
-    case 4: stepRecommendation(); break;
-    case 5: stepVelaCritical(); break;
-    case 6: stepEscalation(); break;
-    case 7: stepRecovery(); break;
-  }
-
-  document.getElementById('engineStatus').textContent = step >= 7 ? 'All Clear' : 'Monitoring';
-}
-
-function stepDailyDigest() {
-  addSlackMsg(dividerMsg('Today'));
-  const digestHTML = `
-    <div class="report-block">
-      <div class="report-title">&#128202; Daily Performance Digest</div>
-      <div class="report-sub">Tuesday &middot; All accounts synced &middot; ThinkFlow Ad Performance Agent</div>
-      <hr class="report-divider">
-      <div class="msg-text" style="margin-bottom:8px">Good morning! All <strong>3 client accounts</strong> are performing within target thresholds. Here's your daily snapshot:</div>
-      <div class="report-section">Account Summary</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="report-row"><span style="font-size:14px">&#9989;</span><span class="report-value" style="min-width:130px">Apex Roofing</span><span style="color:var(--slack-muted);font-size:12px">Meta &middot; ROAS 3.2x &middot; CPA $38 &middot; 47% paced</span></div>
-        <div class="report-row"><span style="font-size:14px">&#9989;</span><span class="report-value" style="min-width:130px">Vela Skincare</span><span style="color:var(--slack-muted);font-size:12px">Google &middot; ROAS 4.1x &middot; CPA $29 &middot; 47% paced</span></div>
-        <div class="report-row"><span style="font-size:14px">&#9989;</span><span class="report-value" style="min-width:130px">Ironclad HVAC</span><span style="color:var(--slack-muted);font-size:12px">Meta+Google &middot; ROAS 3.6x &middot; CPA $42 &middot; 47% paced</span></div>
-      </div>
-      <hr class="report-divider">
-      <div style="font-size:12px;color:var(--healthy)">&#128994; No anomalies detected. Next check in 2 hours.</div>
-    </div>
-  `;
-  addSlackMsg(botMsg('8:02 AM', digestHTML, [{emoji:'&#128077;',count:3},{emoji:'&#9749;',count:2}]));
-}
-
-function stepApexWarning() {
-  // Update dashboard
-  updateAccount('apex', ACCOUNTS[0].warning, 'Warning', 'badge-warning', 'card-warning', 1, {
-    cpa: { text: '+47% ↑', bad: true },
-    roas: { text: '-34% ↓', bad: true },
-    ctr: { text: '-33% ↓', bad: true }
-  });
-  // Typing indicator
-  showTyping(true);
-}
-
-function stepAnomalyAlert() {
-  showTyping(false);
-  const alertHTML = `
-    <div class="report-block block-warning">
-      <div class="report-title">&#9888;&#65039; Anomaly Detected &mdash; Apex Roofing</div>
-      <div class="report-sub">Meta Ads &middot; Triggered at 10:15 AM &middot; Severity: Warning</div>
-      <hr class="report-divider">
-      <div class="msg-text" style="margin-bottom:8px"><strong>CPA has spiked 47% above target</strong> in the last 4 hours. Multiple metrics are degrading:</div>
-      <div class="report-section">Metric Breakdown</div>
-      <div class="report-row"><span class="report-label">CPA</span><span class="report-value">$56.00</span><span class="metric-tag tag-bad">+47% above $38 target</span></div>
-      <div class="report-row"><span class="report-label">ROAS</span><span class="report-value">2.1x</span><span class="metric-tag tag-bad">below 2.5x threshold</span></div>
-      <div class="report-row"><span class="report-label">CTR</span><span class="report-value">1.6%</span><span class="metric-tag tag-warn">-33% from baseline</span></div>
-      <div class="report-row"><span class="report-label">Spend</span><span class="report-value">$2,890</span><span class="metric-tag tag-warn">58% of monthly budget</span></div>
-      <hr class="report-divider">
-      <div style="font-size:12px;color:var(--warning)">&#128300; Running AI analysis to identify root cause...</div>
-    </div>
-  `;
-  addSlackMsg(botMsg('10:15 AM', alertHTML, [{emoji:'&#128064;',count:4}]));
-  showTyping(true);
-}
-
-function stepClaudeAnalysis() {
-  showTyping(false);
-  const aiHTML = `
-    <div class="ai-block">
-      <div class="ai-header">
-        <span class="ai-icon">&#129302;</span>
-        <span class="ai-label">Claude AI Analysis</span>
-      </div>
-      <div class="ai-text">
-        <strong>Root cause identified: Creative fatigue on top-performing ad set.</strong><br><br>
-        The primary ad set <code>"Roof Repair - Homeowners 35-65"</code> has been running the same 3 creatives for 18 days. Frequency has reached <strong>4.7x</strong> (threshold: 3.0x), causing CTR to decline from 2.4% to 1.6%.<br><br>
-        <strong>Contributing factors:</strong><br>
-        &#8226; Ad set frequency 4.7x &mdash; audience is oversaturated<br>
-        &#8226; No new creatives added in 18 days<br>
-        &#8226; Top creative CTR dropped 52% in last 7 days<br>
-        &#8226; Cost per result increasing on a 3-day rolling average<br><br>
-        <strong>Confidence:</strong> High (92%) &mdash; pattern matches creative fatigue profile across 140+ similar accounts.
-      </div>
-    </div>
-  `;
-  addSlackMsg(botMsg('10:17 AM', aiHTML, [{emoji:'&#129504;',count:3},{emoji:'&#128175;',count:2}]));
-}
-
-function stepRecommendation() {
-  const recHTML = `
-    <div class="report-block" style="border-left-color:var(--slack-link)">
-      <div class="report-title">&#128161; Recommended Actions &mdash; Apex Roofing</div>
-      <hr class="report-divider">
-      <div class="action-item" style="border-left-color:var(--critical)">
-        <div class="action-label" style="color:var(--critical)">Immediate</div>
-        <span class="msg-text">Pause ad set <code>"Roof Repair - Homeowners 35-65"</code> — it's burning budget at a $56 CPA with no signs of recovery.</span>
-      </div>
-      <div class="action-item" style="border-left-color:var(--warning)">
-        <div class="action-label" style="color:var(--warning)">Today</div>
-        <span class="msg-text">Reallocate $800 daily budget to ad set <code>"Emergency Roof - Storm Season"</code> which is holding a $31 CPA and 2.9% CTR.</span>
-      </div>
-      <div class="action-item">
-        <div class="action-label">This Week</div>
-        <span class="msg-text">Brief creative team on 3-4 new video variants for the fatigued audience. UGC testimonial format recommended based on vertical benchmarks.</span>
-      </div>
-      <hr class="report-divider">
-      <div style="font-size:12px;color:var(--slack-muted)">&#128172; Reply <strong>approve</strong> to let ThinkFlow execute the pause + reallocation, or <strong>dismiss</strong> to take manual action.</div>
-    </div>
-  `;
-  addSlackMsg(botMsg('10:17 AM', recHTML, [{emoji:'&#9989;',count:2},{emoji:'&#128588;',count:1}]));
-}
-
-function stepVelaCritical() {
-  updateAccount('vela', ACCOUNTS[1].critical, 'Critical', 'badge-critical', 'card-critical', 1, {
-    cpa: { text: '+52% ↑', bad: true },
-    roas: { text: '-32% ↓', bad: true },
-    ctr: { text: '-42% ↓', bad: true }
-  });
-  showTyping(true);
-}
-
-function stepEscalation() {
-  showTyping(false);
-  const escHTML = `
-    <div class="report-block block-critical">
-      <div class="report-title">&#128680; URGENT: Vela Skincare &mdash; Critical Alert</div>
-      <div class="report-sub">Google Ads &middot; Triggered at 1:33 PM &middot; Severity: Critical</div>
-      <hr class="report-divider">
-      <div class="msg-text"><span class="mention">@channel</span> <strong>Vela Skincare Google Ads CTR has dropped 42%</strong> in the last 3 hours. Account status escalated to <strong style="color:var(--critical)">Critical</strong>.</div>
-      <hr class="report-divider">
-      <div class="report-section">Metric Breakdown</div>
-      <div class="report-row"><span class="report-label">CTR</span><span class="report-value">1.8%</span><span class="metric-tag tag-bad">was 3.1% at 8AM</span></div>
-      <div class="report-row"><span class="report-label">CPA</span><span class="report-value">$44.00</span><span class="metric-tag tag-bad">+52% above $29 target</span></div>
-      <div class="report-row"><span class="report-label">ROAS</span><span class="report-value">2.8x</span><span class="metric-tag tag-warn">below 3.5x threshold</span></div>
-      <hr class="report-divider">
-      <div class="ai-block" style="margin-top:0">
-        <div class="ai-header"><span class="ai-icon">&#129302;</span><span class="ai-label">Claude AI — Rapid Assessment</span></div>
-        <div class="ai-text">
-          <strong>Likely cause: Competitor bidding surge on core branded terms.</strong> Google Auction Insights show a new competitor entering Vela's top keywords in the last 4 hours. Impression share dropped from 78% to 52%.<br><br>
-          <strong>Recommended:</strong> Increase bids 15-20% on top 5 converting keywords + add negative keywords for irrelevant new search terms detected.
-        </div>
-      </div>
-    </div>
-  `;
-  addSlackMsg(botMsg('1:33 PM', escHTML, [{emoji:'&#128680;',count:5},{emoji:'&#128064;',count:3}]));
-}
-
-function stepRecovery() {
-  // Recover Apex
-  updateAccount('apex', ACCOUNTS[0].recovered, 'Healthy', 'badge-healthy', '', 2, {
-    cpa: { text: '-37% ↓', bad: false },
-    roas: { text: '+62% ↑', bad: false },
-    ctr: { text: '+63% ↑', bad: false }
-  });
-  // Recover Vela
-  updateAccount('vela', ACCOUNTS[1].recovered, 'Healthy', 'badge-healthy', '', 2, {
-    cpa: { text: '-39% ↓', bad: false },
-    roas: { text: '+54% ↑', bad: false },
-    ctr: { text: '+83% ↑', bad: false }
-  });
-
-  const successHTML = `
-    <div class="report-block block-success">
-      <div class="report-title">&#9989; All Accounts Recovered</div>
-      <div class="report-sub">Status update &middot; 3:45 PM &middot; All accounts back to Healthy</div>
-      <hr class="report-divider">
-      <div class="msg-text" style="margin-bottom:8px">Actions executed successfully. Both accounts have returned to healthy performance:</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin:8px 0">
-        <div style="background:rgba(43,172,118,.06);border-radius:6px;padding:10px 12px">
-          <div style="font-weight:700;color:var(--slack-white);font-size:13px;margin-bottom:4px">&#128994; Apex Roofing &mdash; Recovered</div>
-          <div style="font-size:12px;color:var(--slack-text);line-height:1.5">
-            Fatigued ad set paused. Budget reallocated to <code>"Emergency Roof - Storm Season"</code>.<br>
-            CPA recovered from $56 &#8594; <strong style="color:var(--healthy)">$35</strong> &middot; ROAS back to <strong style="color:var(--healthy)">3.4x</strong>
-          </div>
-        </div>
-        <div style="background:rgba(43,172,118,.06);border-radius:6px;padding:10px 12px">
-          <div style="font-weight:700;color:var(--slack-white);font-size:13px;margin-bottom:4px">&#128994; Vela Skincare &mdash; Recovered</div>
-          <div style="font-size:12px;color:var(--slack-text);line-height:1.5">
-            Keyword bids adjusted +18%. Negative keywords added for competitor terms.<br>
-            CPA recovered from $44 &#8594; <strong style="color:var(--healthy)">$27</strong> &middot; CTR back to <strong style="color:var(--healthy)">3.3%</strong>
-          </div>
-        </div>
-      </div>
-      <hr class="report-divider">
-      <div style="font-size:12.5px;color:var(--slack-text);line-height:1.5">
-        <strong style="color:var(--healthy)">Impact today:</strong> ThinkFlow detected and resolved 2 performance anomalies within minutes, preventing an estimated <strong style="color:var(--slack-white)">$1,840 in wasted ad spend</strong> across both accounts.
-      </div>
-    </div>
-  `;
-  addSlackMsg(botMsg('3:45 PM', successHTML, [{emoji:'&#127881;',count:6},{emoji:'&#128640;',count:4},{emoji:'&#128154;',count:3}]));
-}
-
-// ── Controls ──
 function togglePlay() {
   playing = !playing;
   const btn = document.getElementById('playBtn');
   const dot = document.getElementById('stateDot');
   if (playing) {
     btn.innerHTML = '&#9208; Pause';
-    btn.classList.add('playing');
-    btn.classList.remove('primary');
+    btn.classList.add('paused');
     dot.classList.add('active');
     document.getElementById('engineStatus').textContent = 'Monitoring';
-    // Immediate first step if at beginning
-    if (currentStep < 0) { executeStep(0); currentStep = 0; }
-    playInterval = setInterval(() => {
-      if (currentStep >= 7) {
-        togglePlay();
-        document.getElementById('engineStatus').textContent = 'Demo Complete';
-        return;
-      }
-      currentStep++;
-      executeStep(currentStep);
-    }, 3000);
+    iv = setInterval(() => {
+      if (g >= totalSteps) { togglePlay(); document.getElementById('stateLabel').textContent = 'Demo complete'; return; }
+      render(g++);
+    }, 1800);
   } else {
     btn.innerHTML = '&#9654; Play Demo';
-    btn.classList.remove('playing');
-    btn.classList.add('primary');
+    btn.classList.remove('paused');
     dot.classList.remove('active');
     document.getElementById('engineStatus').textContent = 'Paused';
-    clearInterval(playInterval);
+    clearInterval(iv);
   }
 }
 
 function stepForward() {
-  if (currentStep >= 7) return;
-  currentStep++;
-  executeStep(currentStep);
+  if (g >= totalSteps) return;
+  render(g++);
 }
 
 function skipToAlert() {
-  // Skip to step 2 (anomaly alert) or step 6 (escalation) whichever is next
-  if (currentStep < 2) {
-    // Execute steps 0-2
-    for (let i = currentStep + 1; i <= 2; i++) executeStep(i);
-    currentStep = 2;
-  } else if (currentStep < 6) {
-    for (let i = currentStep + 1; i <= 6; i++) executeStep(i);
-    currentStep = 6;
-  }
+  // Skip to phase 2 (anomaly alert) or phase 6 (escalation)
+  const { pi } = getPhase(g);
+  let target;
+  if (pi < 2) target = phaseStarts[2];
+  else if (pi < 6) target = phaseStarts[6];
+  else return;
+  while (g < target && g < totalSteps) render(g++);
 }
 
 function skipToResolution() {
-  if (currentStep >= 7) return;
-  for (let i = currentStep + 1; i <= 7; i++) executeStep(i);
-  currentStep = 7;
+  const target = phaseStarts[7];
+  while (g < target + PHASES[7].steps.length + 1 && g < totalSteps) render(g++);
 }
 
 function resetDemo() {
   if (playing) togglePlay();
-  currentStep = -1;
+  g = 0;
   document.getElementById('slackMessages').innerHTML = '';
-  showTyping(false);
-  document.getElementById('engineStatus').textContent = 'Idle';
+  document.getElementById('agentFeed').innerHTML = '';
+  document.getElementById('typingEl').classList.remove('visible');
+  document.getElementById('stateLabel').textContent = 'Ready \u2014 click Play';
   document.getElementById('stateDot').classList.remove('active');
-  const btn = document.getElementById('playBtn');
-  btn.innerHTML = '&#9654; Play Demo';
-  btn.classList.add('primary');
-  btn.classList.remove('playing');
-  renderAccounts('initial');
-  updateClock(-1);
+  document.getElementById('engineStatus').textContent = 'Idle';
+  document.getElementById('playBtn').innerHTML = '&#9654; Play Demo';
+  document.getElementById('playBtn').classList.remove('paused');
 }
 
-// ── Init ──
-init();
+function showEl(el, feed) {
+  const container = document.getElementById(feed ? 'agentFeed' : 'slackMessages');
+  container.appendChild(el);
+  setTimeout(() => { el.classList.add('visible'); container.scrollTop = container.scrollHeight; }, 30);
+}
+
+function render(step) {
+  const { pi, local } = getPhase(step);
+  const phase = PHASES[pi];
+  const typing = document.getElementById('typingEl');
+
+  // Phase label badge in agent feed at start of each phase
+  if (local === 0) {
+    if (pi > 0) {
+      const d = document.createElement('hr');
+      d.className = 'agent-divider';
+      document.getElementById('agentFeed').appendChild(d);
+    }
+    const badge = document.createElement('div');
+    badge.className = 'phase-badge';
+    badge.innerHTML = `<div class="pb-label">// PHASE ${pi+1}/${PHASES.length}: ${phase.label}</div><div class="pb-text">${phase.desc}</div>`;
+    document.getElementById('agentFeed').appendChild(badge);
+  }
+
+  const stepsCount = phase.steps.length;
+  const hasSlack = !!phase.slack;
+
+  if (local < stepsCount) {
+    // Agent step
+    const sd = phase.steps[local];
+    const el = document.createElement('div');
+    el.className = 'agent-step';
+    const clsMap = { done:'sn-done', warn:'sn-warn', error:'sn-error' };
+    const iconMap = { done:'✓', warn:'⚠', error:'✕' };
+    const tClsMap = { done:'', warn:' t-warn', error:' t-err' };
+    const nc = clsMap[sd.cls] || 'sn-done';
+    const icon = iconMap[sd.cls] || '✓';
+    const tc = tClsMap[sd.cls] || '';
+    el.innerHTML = `<div class="step-header"><div class="step-num ${nc}">${icon}</div><div class="step-lbl">${sd.lbl}</div><div class="step-t${tc}">${sd.t}</div></div><div class="step-body">${sd.details.map(d => {
+      let cls = 'sd';
+      if (sd.hi) cls += ' hi';
+      if (d.includes('✓')) cls = 'sd ok';
+      if (d.includes('✕') || d.includes('BREACH') || d.includes('CRITICAL')) cls = 'sd er';
+      if (d.includes('⚠') || d.includes('warning')) cls = 'sd wr';
+      return `<div class="${cls}">${d}</div>`;
+    }).join('')}</div>`;
+    showEl(el, true);
+
+    // Show typing if next step will be a slack message
+    if (local === stepsCount - 1 && hasSlack) {
+      typing.classList.add('visible');
+    }
+
+    document.getElementById('stateLabel').textContent = `Phase ${pi+1}/${PHASES.length} — ${phase.label}`;
+
+  } else if (hasSlack) {
+    // Slack message
+    typing.classList.remove('visible');
+    const s = phase.slack;
+    const msg = document.createElement('div');
+    msg.className = 'msg-group';
+    let reactHTML = '';
+    if (s.reactions) {
+      reactHTML = '<div class="msg-reactions">' + s.reactions.map(r => `<div class="reaction">${r.e} <span class="reaction-count">${r.c}</span></div>`).join('') + '</div>';
+    }
+    msg.innerHTML = `<div class="avatar" style="background:#B22222;font-size:10px;font-weight:800">TF</div><div class="msg-content"><div class="msg-header"><span class="msg-author bot">ThinkFlow Agent</span><span class="bot-badge">APP</span><span class="msg-time">${s.time}</span></div>${s.html}${reactHTML}</div>`;
+    showEl(msg, false);
+
+    document.getElementById('stateLabel').textContent = `Phase ${pi+1} complete`;
+    if (pi === PHASES.length - 1) {
+      document.getElementById('engineStatus').textContent = 'All Clear';
+    }
+  }
+}
 </script>
 </body>
 </html>
