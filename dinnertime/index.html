@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dinnertime.chi — Chicago Table-Drop Strategist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+          colors: {
+            cubs: { blue: '#0E3386', blue2: '#1746a8', red: '#CC3433', red2: '#e0463f' }
+          },
+          keyframes: {
+            slidein: { '0%': { opacity: 0, transform: 'translateY(8px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            pop: { '0%': { transform: 'scale(0.96)' }, '60%': { transform: 'scale(1.02)' }, '100%': { transform: 'scale(1)' } }
+          },
+          animation: {
+            slidein: 'slidein 0.35s ease-out',
+            pop: 'pop 0.3s ease-out'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulseringamber { 0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.5); } 70% { box-shadow: 0 0 0 8px rgba(245,158,11,0); } 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); } }
+    .imminent { animation: pulseringamber 1.6s infinite; }
+    @keyframes pulseringred { 0% { box-shadow: 0 0 0 0 rgba(204,52,51,0.6); } 70% { box-shadow: 0 0 0 10px rgba(204,52,51,0); } 100% { box-shadow: 0 0 0 0 rgba(204,52,51,0); } }
+    .live-now { animation: pulseringred 1.3s infinite; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-950 font-sans min-h-screen text-white">
+
+  <div class="max-w-6xl mx-auto px-6 py-10">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <a href="../" class="text-gray-500 hover:text-white transition-colors text-sm">← ThinkFlow</a>
+          <span class="text-gray-700">/</span>
+          <div class="w-9 h-9 rounded-lg bg-cubs-blue border border-cubs-red/40 flex items-center justify-center">
+            <span class="text-white font-extrabold text-base tracking-tight">C</span>
+          </div>
+          <span class="text-xl font-bold">dinnertime<span class="text-cubs-red">.chi</span></span>
+          <span class="text-xs font-medium text-white bg-cubs-red rounded-full px-2.5 py-0.5">Chicago</span>
+        </div>
+        <p class="text-gray-400 text-sm max-w-2xl">Your strategist for Chicago's hardest tables. Tracks exactly when reservations <span class="text-white font-medium">drop</span>, sets the reminder, and gets you ready to pounce — it never books for you, it perfects your <span class="text-white font-medium">timing</span>.</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-6 flex items-center justify-between flex-wrap gap-4">
+      <div class="flex items-center gap-2">
+        <button id="playBtn" class="flex items-center gap-2 bg-cubs-blue hover:bg-cubs-blue2 text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors">
+          <svg id="playIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <span id="playLabel">Play</span>
+        </button>
+        <button id="stepBtn" class="bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium text-sm px-3 py-2 rounded-lg transition-colors">Step +1</button>
+        <button id="dropBtn" class="bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium text-sm px-3 py-2 rounded-lg transition-colors">Skip to next drop</button>
+        <button id="resetBtn" class="bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium text-sm px-3 py-2 rounded-lg transition-colors">Reset</button>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div class="text-[11px] uppercase tracking-wide text-gray-500 font-medium">Simulated time</div>
+          <div id="simClock" class="text-sm font-semibold text-white tabular-nums">Tue · 11:55 PM</div>
+        </div>
+        <div class="h-8 w-px bg-gray-800"></div>
+        <div class="text-right">
+          <div class="text-[11px] uppercase tracking-wide text-gray-500 font-medium">Step</div>
+          <div id="stepCount" class="text-sm font-semibold text-cubs-red2 tabular-nums">0 / 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-panel layout -->
+    <div class="grid lg:grid-cols-5 gap-6">
+
+      <!-- LEFT: Watchlist dashboard -->
+      <div class="lg:col-span-3">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wide">Watchlist · 6 tables</h2>
+          <span id="watchStatus" class="text-xs text-gray-500 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-gray-600"></span> Idle
+          </span>
+        </div>
+        <div id="cards" class="space-y-3"></div>
+      </div>
+
+      <!-- RIGHT: Agent action feed -->
+      <div class="lg:col-span-2">
+        <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-3">Agent activity</h2>
+        <div id="feed" class="bg-gray-900 border border-gray-800 rounded-2xl p-3 space-y-2.5 h-[560px] overflow-y-auto">
+          <div class="text-center text-gray-600 text-sm py-12" id="feedEmpty">Press <span class="text-gray-400 font-medium">Play</span> to start the simulation.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="text-center text-gray-700 text-xs mt-8">Interactive demo · fictional drop times for illustration · dinnertime.chi perfects timing, you tap "book."</p>
+  </div>
+
+<script>
+// ---------- Restaurant watchlist ----------
+const RESTAURANTS = [
+  { id: 'alinea',  name: 'Alinea',          neigh: 'Lincoln Park',   stars: '★★★ Michelin', platform: 'Tock',     note: 'Tickets drop monthly, midnight CT' },
+  { id: 'smyth',   name: 'Smyth',           neigh: 'West Loop',      stars: '★★ Michelin',  platform: 'Resy',     note: 'Rolling 28-day window, 9:00 AM' },
+  { id: 'oriole',  name: 'Oriole',          neigh: 'Fulton Market',  stars: '★★ Michelin',  platform: 'Tock',     note: 'Monthly release + cancellation watch' },
+  { id: 'kasama',  name: 'Kasama',          neigh: 'Ukrainian Vlg.', stars: '★ Michelin',   platform: 'Walk-in',  note: 'No reservations — line strategy' },
+  { id: 'next',    name: 'Next',            neigh: 'Fulton Market',  stars: 'Themed menus', platform: 'Tock',     note: 'New menu tickets release in batches' },
+  { id: 'goat',    name: 'Girl & the Goat', neigh: 'West Loop',      stars: 'Stephanie Izard', platform: 'Resy', note: 'Rolling 30-day window, 10:00 AM' },
+];
+
+// status: idle | watching | imminent | live | reserved | walkin
+const STATE = {};
+RESTAURANTS.forEach(r => STATE[r.id] = { status: 'idle', detail: '', countdown: '' });
+
+// ---------- Simulation steps ----------
+const STEPS = [
+  {
+    clock: 'Tue · 11:55 PM',
+    watch: 'Scanning 6 platforms',
+    patch: { alinea: { status:'imminent', detail:'Tock release in 5 min', countdown:'00:05:00' },
+             smyth:  { status:'watching', detail:'Next drop: Wed 9:00 AM (28-day window)' },
+             oriole: { status:'watching', detail:'Cancellation watch armed' },
+             kasama: { status:'watching', detail:'Fri line strategy queued' },
+             next:   { status:'watching', detail:'No active batch' },
+             goat:   { status:'watching', detail:'Next drop: Wed 10:00 AM' } },
+    feed: [
+      { type:'scan', title:'Watchlist armed', body:'Monitoring Tock, Resy & OpenTable inventory across 6 Chicago tables.' },
+      { type:'calendar', title:'Reminder created · "Book Alinea"', body:'Fires 11:59 PM — 1 min before tickets go live. Linked: tock.com/alinea' },
+    ]
+  },
+  {
+    clock: 'Tue · 11:59 PM',
+    watch: 'Drop imminent',
+    patch: { alinea: { status:'imminent', detail:'Tock goes live in 60 sec', countdown:'00:01:00' } },
+    feed: [
+      { type:'alert', title:'⏰ Heads up — Alinea in 60 seconds', body:'Have Tock open and logged in. Target: Sat 9:00 PM, 2 guests. Salon menu.' },
+    ]
+  },
+  {
+    clock: 'Wed · 12:00 AM',
+    watch: 'LIVE — act now',
+    patch: { alinea: { status:'live', detail:'TICKETS LIVE — Sat 9:00 PM available', countdown:'' } },
+    feed: [
+      { type:'drop', title:'🔴 Alinea tickets are LIVE', body:'Sat 9:00 PM · 2 of 4 salon slots showing. These clear in ~90 seconds historically.' },
+      { type:'alert', title:'👉 Tap to book now', body:'tock.com/alinea/2026-06-27 — dinnertime.chi holds nothing for you; tap fast.' },
+    ]
+  },
+  {
+    clock: 'Wed · 12:01 AM',
+    watch: 'Confirmed',
+    patch: { alinea: { status:'reserved', detail:'Reserved ✓ · Sat 9:00 PM · 2 guests', countdown:'' } },
+    feed: [
+      { type:'success', title:'✅ Alinea locked', body:'You booked Sat 9:00 PM. Added to your calendar with the Tock confirmation #.' },
+      { type:'info', title:'Re-arming watchlist', body:'5 tables still tracked. Next drop window: Smyth at 9:00 AM.' },
+    ]
+  },
+  {
+    clock: 'Wed · 8:55 AM',
+    watch: 'Drop imminent',
+    patch: { smyth: { status:'imminent', detail:'Resy opens 9:00 AM — 5 min', countdown:'00:05:00' },
+             goat:  { status:'watching', detail:'Drop at 10:00 AM (queued next)' } },
+    feed: [
+      { type:'calendar', title:'Reminder firing · "Book Smyth"', body:'Resy 28-day window opens 9:00 AM for Fri dinner. resy.com/cities/chicago/smyth' },
+      { type:'alert', title:'⏰ Smyth in 5 minutes', body:'Refresh Resy at 8:59:50. Go for 7:30 PM, the 6-top counter clears slowest.' },
+    ]
+  },
+  {
+    clock: 'Wed · 9:00 AM',
+    watch: 'LIVE — act now',
+    patch: { smyth: { status:'live', detail:'RESY LIVE — Fri 7:30 PM open', countdown:'' } },
+    feed: [
+      { type:'drop', title:'🔴 Smyth inventory dropped', body:'Fri 7:30 PM & 9:45 PM showing on Resy. 7:30 is the one to grab.' },
+      { type:'alert', title:'👉 Book Fri 7:30 PM now', body:'Notify-me also armed in case it vanishes mid-checkout.' },
+    ]
+  },
+  {
+    clock: 'Wed · 9:02 AM',
+    watch: 'Cancellation caught',
+    patch: { smyth:  { status:'reserved', detail:'Reserved ✓ · Fri 7:30 PM · 2 guests', countdown:'' },
+             oriole: { status:'live', detail:'Cancellation just opened — Thu 8:15 PM', countdown:'' } },
+    feed: [
+      { type:'success', title:'✅ Smyth locked', body:'Fri 7:30 PM confirmed and on your calendar.' },
+      { type:'drop', title:'🔴 Oriole cancellation detected', body:'A Thu 8:15 PM 2-top just freed up on Tock. These last seconds — tap now.' },
+    ]
+  },
+  {
+    clock: 'Fri · 7:45 PM',
+    watch: 'Walk-in window',
+    patch: { kasama: { status:'walkin', detail:'Leave by 7:55 PM to make the list', countdown:'' },
+             oriole: { status:'reserved', detail:'Reserved ✓ · Thu 8:15 PM · 2 guests', countdown:'' } },
+    feed: [
+      { type:'walkin', title:'🚶 Kasama walk-in — go now', body:'Doors at 8:30. List forms ~8:00. From your spot it\'s a 9-min walk — leave by 7:55 to be 6th in line (≈25 min wait).' },
+      { type:'info', title:'Tip', body:'Put one person in line, order pulled pork BBQ adobo + the lumpia while you wait.' },
+    ]
+  },
+  {
+    clock: 'Sun · 9:30 AM',
+    watch: 'Weekly recap',
+    patch: { next:   { status:'watching', detail:'New menu "Kyoto" tickets drop Mon 12 PM' },
+             kasama: { status:'watching', detail:'Re-armed for next walk-in night' },
+             goat:   { status:'watching', detail:'Next drop: Mon 10:00 AM' } },
+    feed: [
+      { type:'success', title:'📋 Your week', body:'3 reserved (Alinea, Smyth, Oriole) + 1 walk-in (Kasama). 0 bots, 0 blocked accounts.' },
+      { type:'calendar', title:'Next up', body:'Reminder set: Next "Kyoto" menu, Mon 12:00 PM on Tock. Watchlist stays armed.' },
+    ]
+  },
+];
+
+// ---------- Rendering ----------
+const STATUS_STYLES = {
+  idle:     { ring:'border-gray-800',              dot:'bg-gray-600',    badge:'bg-gray-800 text-gray-400',         label:'Idle' },
+  watching: { ring:'border-cubs-blue2/60',         dot:'bg-cubs-blue2',  badge:'bg-cubs-blue/40 text-blue-200',     label:'Watching' },
+  imminent: { ring:'border-amber-500/60 imminent', dot:'bg-amber-400',   badge:'bg-amber-500/15 text-amber-300',    label:'Drop imminent' },
+  live:     { ring:'border-cubs-red/80 live-now',  dot:'bg-cubs-red2',   badge:'bg-cubs-red/20 text-red-300',       label:'LIVE' },
+  reserved: { ring:'border-cubs-blue2/60',         dot:'bg-blue-300',    badge:'bg-cubs-blue/40 text-blue-100',     label:'Reserved' },
+  walkin:   { ring:'border-white/30',              dot:'bg-white',       badge:'bg-white/10 text-gray-100',         label:'Walk-in' },
+};
+
+const FEED_STYLES = {
+  scan:     { bd:'border-gray-700',        bg:'bg-gray-800/40',     ic:'text-gray-400',    icon:'M4 6h16M4 12h16M4 18h7' },
+  calendar: { bd:'border-cubs-blue2/60',   bg:'bg-cubs-blue/25',    ic:'text-blue-200',    icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+  alert:    { bd:'border-amber-500/40',    bg:'bg-amber-500/10',    ic:'text-amber-300',   icon:'M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3L13.74 4a2 2 0 00-3.48 0L3.34 16a2 2 0 001.73 3z' },
+  drop:     { bd:'border-cubs-red/60',     bg:'bg-cubs-red/15',     ic:'text-red-300',     icon:'M13 10V3L4 14h7v7l9-11h-7z' },
+  success:  { bd:'border-cubs-blue2/60',   bg:'bg-cubs-blue/25',    ic:'text-blue-200',    icon:'M5 13l4 4L19 7' },
+  walkin:   { bd:'border-white/25',        bg:'bg-white/5',         ic:'text-gray-100',    icon:'M13 5l7 7-7 7M5 5l7 7-7 7' },
+  info:     { bd:'border-gray-700',        bg:'bg-gray-800/40',     ic:'text-gray-400',    icon:'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+};
+
+function renderCards() {
+  const el = document.getElementById('cards');
+  el.innerHTML = RESTAURANTS.map(r => {
+    const st = STATE[r.id];
+    const s = STATUS_STYLES[st.status];
+    const showCountdown = st.countdown && (st.status === 'imminent');
+    return `
+    <div class="bg-gray-900 border ${s.ring} rounded-xl p-4 transition-all duration-300 animate-pop">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="w-2 h-2 rounded-full ${s.dot}"></span>
+            <h3 class="font-bold text-white">${r.name}</h3>
+            <span class="text-xs text-gray-500">${r.neigh}</span>
+          </div>
+          <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+            <span class="text-[11px] text-gray-400">${r.stars}</span>
+            <span class="text-gray-700">·</span>
+            <span class="text-[11px] text-gray-400">${r.platform}</span>
+          </div>
+          <p class="text-xs ${st.detail ? 'text-gray-300' : 'text-gray-600'} mt-2 leading-snug">${st.detail || r.note}</p>
+        </div>
+        <div class="flex flex-col items-end gap-2 shrink-0">
+          <span class="text-[10px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5 ${s.badge}">${s.label}</span>
+          ${showCountdown ? `<span class="text-xs font-bold tabular-nums text-amber-300">${st.countdown}</span>` : ''}
+          ${st.status === 'live' ? `<span class="text-[10px] font-bold text-cubs-red2 animate-pulse">BOOK NOW</span>` : ''}
+          ${st.status === 'reserved' ? `<svg class="w-5 h-5 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pushFeed(item) {
+  const f = document.getElementById('feed');
+  const empty = document.getElementById('feedEmpty');
+  if (empty) empty.remove();
+  const s = FEED_STYLES[item.type] || FEED_STYLES.info;
+  const div = document.createElement('div');
+  div.className = `border ${s.bd} ${s.bg} rounded-xl p-3 animate-slidein`;
+  div.innerHTML = `
+    <div class="flex items-start gap-2.5">
+      <svg class="w-4 h-4 ${s.ic} mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="${s.icon}"/></svg>
+      <div class="min-w-0">
+        <div class="text-sm font-semibold text-white leading-snug">${item.title}</div>
+        <div class="text-xs text-gray-400 mt-0.5 leading-snug">${item.body}</div>
+      </div>
+    </div>`;
+  f.appendChild(div);
+  f.scrollTop = f.scrollHeight;
+}
+
+// ---------- Engine ----------
+let cursor = 0;
+let playing = false;
+let timer = null;
+
+function applyStep(i) {
+  const step = STEPS[i];
+  if (step.patch) Object.entries(step.patch).forEach(([id, p]) => Object.assign(STATE[id], p));
+  document.getElementById('simClock').textContent = step.clock;
+  const ws = document.getElementById('watchStatus');
+  const live = step.watch.includes('LIVE') || step.watch.includes('imminent');
+  ws.innerHTML = `<span class="w-2 h-2 rounded-full ${live ? 'bg-cubs-red2 animate-pulse' : 'bg-cubs-blue2'}"></span> ${step.watch}`;
+  renderCards();
+  step.feed.forEach((item, k) => setTimeout(() => pushFeed(item), k * 450));
+  document.getElementById('stepCount').textContent = `${i + 1} / ${STEPS.length}`;
+}
+
+function next() {
+  if (cursor >= STEPS.length) { pause(); return; }
+  applyStep(cursor);
+  cursor++;
+  if (cursor >= STEPS.length) pause();
+}
+
+function play() {
+  if (cursor >= STEPS.length) reset();
+  playing = true;
+  document.getElementById('playIcon').innerHTML = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+  document.getElementById('playLabel').textContent = 'Pause';
+  next();
+  timer = setInterval(() => { if (cursor < STEPS.length) next(); else pause(); }, 3200);
+}
+
+function pause() {
+  playing = false;
+  clearInterval(timer);
+  document.getElementById('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+  document.getElementById('playLabel').textContent = cursor >= STEPS.length ? 'Replay' : 'Play';
+}
+
+function reset() {
+  pause();
+  cursor = 0;
+  RESTAURANTS.forEach(r => STATE[r.id] = { status: 'idle', detail: '', countdown: '' });
+  document.getElementById('feed').innerHTML = '<div class="text-center text-gray-600 text-sm py-12" id="feedEmpty">Press <span class="text-gray-400 font-medium">Play</span> to start the simulation.</div>';
+  document.getElementById('simClock').textContent = 'Tue · 11:55 PM';
+  document.getElementById('stepCount').textContent = `0 / ${STEPS.length}`;
+  document.getElementById('watchStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-gray-600"></span> Idle';
+  document.getElementById('playLabel').textContent = 'Play';
+  renderCards();
+}
+
+function skipToDrop() {
+  pause();
+  while (cursor < STEPS.length) {
+    const isDrop = STEPS[cursor].watch.includes('LIVE');
+    applyStep(cursor);
+    cursor++;
+    if (isDrop) break;
+  }
+  if (cursor >= STEPS.length) pause();
+}
+
+document.getElementById('playBtn').onclick = () => playing ? pause() : play();
+document.getElementById('stepBtn').onclick = () => { pause(); next(); };
+document.getElementById('dropBtn').onclick = skipToDrop;
+document.getElementById('resetBtn').onclick = reset;
+
+document.getElementById('stepCount').textContent = `0 / ${STEPS.length}`;
+renderCards();
+</script>
+</body>
+</html>
