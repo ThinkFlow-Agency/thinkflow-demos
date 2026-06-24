@@ -87,7 +87,7 @@
       <!-- LEFT: Watchlist dashboard -->
       <div class="lg:col-span-3">
         <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wide">Watchlist · 6 tables</h2>
+          <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wide">Watchlist · <span id="watchCount">21</span> tables</h2>
           <span id="watchStatus" class="text-xs text-gray-500 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-gray-600"></span> Idle
           </span>
@@ -98,7 +98,7 @@
       <!-- RIGHT: Agent action feed -->
       <div class="lg:col-span-2">
         <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-3">Agent activity</h2>
-        <div id="feed" class="bg-gray-900 border border-gray-800 rounded-2xl p-3 space-y-2.5 h-[560px] overflow-y-auto">
+        <div id="feed" class="bg-gray-900 border border-gray-800 rounded-2xl p-3 space-y-2.5 h-[680px] overflow-y-auto sticky top-6">
           <div class="text-center text-gray-600 text-sm py-12" id="feedEmpty">Press <span class="text-gray-400 font-medium">Play</span> to start the simulation.</div>
         </div>
       </div>
@@ -110,117 +110,139 @@
 
 <script>
 // ---------- Restaurant watchlist ----------
+// hogsalt: part of Hogsalt Hospitality (Brendan Sodikoff group)
 const RESTAURANTS = [
-  { id: 'alinea',  name: 'Alinea',          neigh: 'Lincoln Park',   stars: '★★★ Michelin', platform: 'Tock',     note: 'Tickets drop monthly, midnight CT' },
-  { id: 'smyth',   name: 'Smyth',           neigh: 'West Loop',      stars: '★★ Michelin',  platform: 'Resy',     note: 'Rolling 28-day window, 9:00 AM' },
-  { id: 'oriole',  name: 'Oriole',          neigh: 'Fulton Market',  stars: '★★ Michelin',  platform: 'Tock',     note: 'Monthly release + cancellation watch' },
-  { id: 'kasama',  name: 'Kasama',          neigh: 'Ukrainian Vlg.', stars: '★ Michelin',   platform: 'Walk-in',  note: 'No reservations — line strategy' },
-  { id: 'next',    name: 'Next',            neigh: 'Fulton Market',  stars: 'Themed menus', platform: 'Tock',     note: 'New menu tickets release in batches' },
-  { id: 'goat',    name: 'Girl & the Goat', neigh: 'West Loop',      stars: 'Stephanie Izard', platform: 'Resy', note: 'Rolling 30-day window, 10:00 AM' },
+  // — Marquee fine dining & most-wanted —
+  { id:'alinea',  name:'Alinea',                neigh:'Lincoln Park',     stars:'★★★ Michelin', platform:'Tock',    note:'Tickets drop monthly, midnight CT' },
+  { id:'smyth',   name:'Smyth',                 neigh:'West Loop',        stars:'★★★ Michelin', platform:'Tock',    note:'Rolling release, prepaid tickets' },
+  { id:'oriole',  name:'Oriole',                neigh:'Fulton Market',    stars:'★★ Michelin',  platform:'Tock',    note:'90-day rolling + cancellation watch' },
+  { id:'kyoten',  name:'Kyōten',                neigh:'Logan Square',     stars:'★★ Michelin',  platform:'Tock',    note:'8 seats · omakase · weeks ahead' },
+  { id:'kasama',  name:'Kasama',                neigh:'Ukrainian Vlg.',   stars:'★ Michelin',   platform:'Walk-in', note:'No reservations — line strategy' },
+  { id:'next',    name:'Next',                  neigh:'Fulton Market',    stars:'Themed menus', platform:'Tock',    note:'New menu tickets release in batches' },
+  { id:'goat',    name:'Girl & the Goat',       neigh:'West Loop',        stars:'Stephanie Izard', platform:'Resy', note:'Rolling 30-day window, 10:00 AM' },
+  { id:'monte',   name:'Monteverde',            neigh:'West Loop',        stars:'JBA · Italian',platform:'Resy',    note:'Books a month out, 9:00 AM' },
+  { id:'maple',   name:'Maple & Ash',           neigh:'Gold Coast',       stars:'Steakhouse',   platform:'Resy',    note:'30-day window — brutal weekends' },
+  { id:'pequods', name:"Pequod's Pizza",        neigh:'Lincoln Park',     stars:'Deep dish',    platform:'Walk-in', note:'Caramelized crust — long waits' },
+  // — Hogsalt Hospitality —
+  { id:'aucheval',name:'Au Cheval',             neigh:'West Loop',        stars:'The cheeseburger', platform:'Walk-in', note:'No reservations — remote waitlist', hogsalt:true },
+  { id:'bavettes',name:"Bavette's Bar & Boeuf", neigh:'River North',      stars:'Steakhouse',   platform:'Resy',    note:'30-day window, 9:00 AM — savage', hogsalt:true },
+  { id:'gilt',    name:'Gilt Bar',              neigh:'River North',      stars:'American',     platform:'Resy',    note:'30-day window + bar walk-ins', hogsalt:true },
+  { id:'maudes',  name:"Maude's Liquor Bar",    neigh:'West Loop',        stars:'French',       platform:'Resy',    note:'30-day window, 9:00 AM', hogsalt:true },
+  { id:'bordel',  name:'Bordel',                neigh:'Wicker Park',      stars:'Speakeasy',    platform:'Resy',    note:'Hidden room — limited release', hogsalt:true },
+  { id:'ciccio',  name:'Ciccio Mio',            neigh:'River North',      stars:'Italian',      platform:'Resy',    note:'30-day window, 9:00 AM', hogsalt:true },
+  { id:'fioretta',name:'Fioretta',              neigh:'West Loop',        stars:'Italian steak',platform:'Resy',    note:'30-day window — high demand', hogsalt:true },
+  { id:'greenst', name:'Green Street Smoked Meats', neigh:'West Loop',    stars:'BBQ',          platform:'Walk-in', note:'Order at the counter — peak waits', hogsalt:true },
+  { id:'highfive',name:'High Five Ramen',       neigh:'West Loop',        stars:'Ramen',        platform:'Walk-in', note:'Hidden basement — tiny, fills fast', hogsalt:true },
+  { id:'smallchev',name:'Small Cheval',         neigh:'Multiple',         stars:'Burgers',      platform:'Walk-in', note:'Counter service — quick turns', hogsalt:true },
+  { id:'vault',   name:'Doughnut Vault',        neigh:'River North',      stars:'Doughnuts',    platform:'Walk-in', note:'Morning line — sells out daily', hogsalt:true },
 ];
 
-// status: idle | watching | imminent | live | reserved | walkin
+// status: watching | imminent | live | reserved | walkin
 const STATE = {};
-RESTAURANTS.forEach(r => STATE[r.id] = { status: 'idle', detail: '', countdown: '' });
+function freshState() {
+  RESTAURANTS.forEach(r => STATE[r.id] = { status:'watching', detail:r.note, countdown:'' });
+}
+freshState();
 
 // ---------- Simulation steps ----------
 const STEPS = [
   {
-    clock: 'Tue · 11:55 PM',
-    watch: 'Scanning 6 platforms',
-    patch: { alinea: { status:'imminent', detail:'Tock release in 5 min', countdown:'00:05:00' },
-             smyth:  { status:'watching', detail:'Next drop: Wed 9:00 AM (28-day window)' },
-             oriole: { status:'watching', detail:'Cancellation watch armed' },
-             kasama: { status:'watching', detail:'Fri line strategy queued' },
-             next:   { status:'watching', detail:'No active batch' },
-             goat:   { status:'watching', detail:'Next drop: Wed 10:00 AM' } },
-    feed: [
-      { type:'scan', title:'Watchlist armed', body:'Monitoring Tock, Resy & OpenTable inventory across 6 Chicago tables.' },
+    clock:'Tue · 11:55 PM',
+    watch:'Scanning 21 tables',
+    patch:{ alinea:{ status:'imminent', detail:'Tock release in 5 min', countdown:'00:05:00' } },
+    feed:[
+      { type:'scan', title:'Watchlist armed · 21 tables', body:'Monitoring Tock, Resy & OpenTable inventory + cancellation feeds across the city.' },
       { type:'calendar', title:'Reminder created · "Book Alinea"', body:'Fires 11:59 PM — 1 min before tickets go live. Linked: tock.com/alinea' },
     ]
   },
   {
-    clock: 'Tue · 11:59 PM',
-    watch: 'Drop imminent',
-    patch: { alinea: { status:'imminent', detail:'Tock goes live in 60 sec', countdown:'00:01:00' } },
-    feed: [
+    clock:'Tue · 11:59 PM',
+    watch:'Drop imminent',
+    patch:{ alinea:{ status:'imminent', detail:'Tock goes live in 60 sec', countdown:'00:01:00' } },
+    feed:[
       { type:'alert', title:'⏰ Heads up — Alinea in 60 seconds', body:'Have Tock open and logged in. Target: Sat 9:00 PM, 2 guests. Salon menu.' },
     ]
   },
   {
-    clock: 'Wed · 12:00 AM',
-    watch: 'LIVE — act now',
-    patch: { alinea: { status:'live', detail:'TICKETS LIVE — Sat 9:00 PM available', countdown:'' } },
-    feed: [
+    clock:'Wed · 12:00 AM',
+    watch:'LIVE — act now',
+    patch:{ alinea:{ status:'live', detail:'TICKETS LIVE — Sat 9:00 PM available', countdown:'' } },
+    feed:[
       { type:'drop', title:'🔴 Alinea tickets are LIVE', body:'Sat 9:00 PM · 2 of 4 salon slots showing. These clear in ~90 seconds historically.' },
       { type:'alert', title:'👉 Tap to book now', body:'tock.com/alinea/2026-06-27 — dinnertime.chi holds nothing for you; tap fast.' },
     ]
   },
   {
-    clock: 'Wed · 12:01 AM',
-    watch: 'Confirmed',
-    patch: { alinea: { status:'reserved', detail:'Reserved ✓ · Sat 9:00 PM · 2 guests', countdown:'' } },
-    feed: [
+    clock:'Wed · 12:01 AM',
+    watch:'Confirmed',
+    patch:{ alinea:{ status:'reserved', detail:'Reserved ✓ · Sat 9:00 PM · 2 guests', countdown:'' } },
+    feed:[
       { type:'success', title:'✅ Alinea locked', body:'You booked Sat 9:00 PM. Added to your calendar with the Tock confirmation #.' },
-      { type:'info', title:'Re-arming watchlist', body:'5 tables still tracked. Next drop window: Smyth at 9:00 AM.' },
+      { type:'info', title:'Re-arming watchlist', body:'20 tables still tracked. Next drop window: Bavette\'s & Maude\'s at 9:00 AM.' },
     ]
   },
   {
-    clock: 'Wed · 8:55 AM',
-    watch: 'Drop imminent',
-    patch: { smyth: { status:'imminent', detail:'Resy opens 9:00 AM — 5 min', countdown:'00:05:00' },
-             goat:  { status:'watching', detail:'Drop at 10:00 AM (queued next)' } },
-    feed: [
-      { type:'calendar', title:'Reminder firing · "Book Smyth"', body:'Resy 28-day window opens 9:00 AM for Fri dinner. resy.com/cities/chicago/smyth' },
-      { type:'alert', title:'⏰ Smyth in 5 minutes', body:'Refresh Resy at 8:59:50. Go for 7:30 PM, the 6-top counter clears slowest.' },
+    clock:'Wed · 8:55 AM',
+    watch:'Drop imminent',
+    patch:{ bavettes:{ status:'imminent', detail:'Resy opens 9:00 AM — 5 min', countdown:'00:05:00' },
+            maudes:{ status:'imminent', detail:'Resy opens 9:00 AM — 5 min', countdown:'00:05:00' } },
+    feed:[
+      { type:'calendar', title:'Reminder firing · "Book Bavette\'s"', body:'Hogsalt 30-day window opens 9:00 AM for Fri dinner. resy.com/cities/chicago/bavettes' },
+      { type:'alert', title:'⏰ Bavette\'s in 5 minutes', body:'Refresh Resy at 8:59:50. Go for 8:00 PM — the half-booths clear slowest.' },
     ]
   },
   {
-    clock: 'Wed · 9:00 AM',
-    watch: 'LIVE — act now',
-    patch: { smyth: { status:'live', detail:'RESY LIVE — Fri 7:30 PM open', countdown:'' } },
-    feed: [
-      { type:'drop', title:'🔴 Smyth inventory dropped', body:'Fri 7:30 PM & 9:45 PM showing on Resy. 7:30 is the one to grab.' },
-      { type:'alert', title:'👉 Book Fri 7:30 PM now', body:'Notify-me also armed in case it vanishes mid-checkout.' },
+    clock:'Wed · 9:00 AM',
+    watch:'LIVE — act now',
+    patch:{ bavettes:{ status:'live', detail:'RESY LIVE — Fri 8:00 PM open', countdown:'' } },
+    feed:[
+      { type:'drop', title:'🔴 Bavette\'s inventory dropped', body:'Fri 8:00 PM & 10:15 PM showing on Resy. 8:00 is the one — it\'ll vanish in under a minute.' },
+      { type:'alert', title:'👉 Book Fri 8:00 PM now', body:'Notify-me also armed in case it disappears mid-checkout. Maude\'s 8:30 PM still open as backup.' },
     ]
   },
   {
-    clock: 'Wed · 9:02 AM',
-    watch: 'Cancellation caught',
-    patch: { smyth:  { status:'reserved', detail:'Reserved ✓ · Fri 7:30 PM · 2 guests', countdown:'' },
-             oriole: { status:'live', detail:'Cancellation just opened — Thu 8:15 PM', countdown:'' } },
-    feed: [
-      { type:'success', title:'✅ Smyth locked', body:'Fri 7:30 PM confirmed and on your calendar.' },
+    clock:'Wed · 9:01 AM',
+    watch:'Cancellation caught',
+    patch:{ bavettes:{ status:'reserved', detail:'Reserved ✓ · Fri 8:00 PM · 2 guests', countdown:'' },
+            oriole:{ status:'live', detail:'Cancellation just opened — Thu 8:15 PM', countdown:'' } },
+    feed:[
+      { type:'success', title:'✅ Bavette\'s locked', body:'Fri 8:00 PM confirmed and on your calendar. Released the Maude\'s backup hold.' },
       { type:'drop', title:'🔴 Oriole cancellation detected', body:'A Thu 8:15 PM 2-top just freed up on Tock. These last seconds — tap now.' },
     ]
   },
   {
-    clock: 'Fri · 7:45 PM',
-    watch: 'Walk-in window',
-    patch: { kasama: { status:'walkin', detail:'Leave by 7:55 PM to make the list', countdown:'' },
-             oriole: { status:'reserved', detail:'Reserved ✓ · Thu 8:15 PM · 2 guests', countdown:'' } },
-    feed: [
-      { type:'walkin', title:'🚶 Kasama walk-in — go now', body:'Doors at 8:30. List forms ~8:00. From your spot it\'s a 9-min walk — leave by 7:55 to be 6th in line (≈25 min wait).' },
-      { type:'info', title:'Tip', body:'Put one person in line, order pulled pork BBQ adobo + the lumpia while you wait.' },
+    clock:'Wed · 9:03 AM',
+    watch:'Confirmed',
+    patch:{ oriole:{ status:'reserved', detail:'Reserved ✓ · Thu 8:15 PM · 2 guests', countdown:'' } },
+    feed:[
+      { type:'success', title:'✅ Oriole locked', body:'Two Michelin stars on a Thursday from a cancellation. Calendar updated.' },
+      { type:'info', title:'Walk-in plan staged', body:'Au Cheval & Kasama have no reservations — I\'ll time your arrival Friday evening.' },
     ]
   },
   {
-    clock: 'Sun · 9:30 AM',
-    watch: 'Weekly recap',
-    patch: { next:   { status:'watching', detail:'New menu "Kyoto" tickets drop Mon 12 PM' },
-             kasama: { status:'watching', detail:'Re-armed for next walk-in night' },
-             goat:   { status:'watching', detail:'Next drop: Mon 10:00 AM' } },
-    feed: [
-      { type:'success', title:'📋 Your week', body:'3 reserved (Alinea, Smyth, Oriole) + 1 walk-in (Kasama). 0 bots, 0 blocked accounts.' },
-      { type:'calendar', title:'Next up', body:'Reminder set: Next "Kyoto" menu, Mon 12:00 PM on Tock. Watchlist stays armed.' },
+    clock:'Fri · 6:15 PM',
+    watch:'Walk-in window',
+    patch:{ aucheval:{ status:'walkin', detail:'Join the remote waitlist NOW (~95 min)', countdown:'' },
+            kasama:{ status:'walkin', detail:'Backup: arrive by 7:55 PM if needed', countdown:'' } },
+    feed:[
+      { type:'walkin', title:'🚶 Au Cheval — get on the list now', body:'No reservations. Join the remote waitlist at 6:15 (quote ~95 min). Leave at 7:30 to arrive as you\'re paged ≈7:50.' },
+      { type:'info', title:'While you wait', body:'It\'s a 12-min walk to Green Street Smoked Meats if the wait blows out — same Hogsalt group, usually walk-in-able.' },
+    ]
+  },
+  {
+    clock:'Sun · 9:30 AM',
+    watch:'Weekly recap',
+    patch:{ next:{ status:'watching', detail:'New menu "Kyoto" tickets drop Mon 12 PM' } },
+    feed:[
+      { type:'success', title:'📋 Your week', body:'3 reserved (Alinea, Bavette\'s, Oriole) + 1 walk-in (Au Cheval). 0 bots, 0 blocked accounts.' },
+      { type:'calendar', title:'Next up', body:'Reminder set: Next "Kyoto" menu, Mon 12:00 PM on Tock. 21 tables stay armed.' },
     ]
   },
 ];
 
 // ---------- Rendering ----------
 const STATUS_STYLES = {
-  idle:     { ring:'border-gray-800',              dot:'bg-gray-600',    badge:'bg-gray-800 text-gray-400',         label:'Idle' },
-  watching: { ring:'border-cubs-blue2/60',         dot:'bg-cubs-blue2',  badge:'bg-cubs-blue/40 text-blue-200',     label:'Watching' },
+  watching: { ring:'border-cubs-blue2/50',         dot:'bg-cubs-blue2',  badge:'bg-cubs-blue/40 text-blue-200',     label:'Watching' },
   imminent: { ring:'border-amber-500/60 imminent', dot:'bg-amber-400',   badge:'bg-amber-500/15 text-amber-300',    label:'Drop imminent' },
   live:     { ring:'border-cubs-red/80 live-now',  dot:'bg-cubs-red2',   badge:'bg-cubs-red/20 text-red-300',       label:'LIVE' },
   reserved: { ring:'border-cubs-blue2/60',         dot:'bg-blue-300',    badge:'bg-cubs-blue/40 text-blue-100',     label:'Reserved' },
@@ -250,6 +272,7 @@ function renderCards() {
           <div class="flex items-center gap-2 flex-wrap">
             <span class="w-2 h-2 rounded-full ${s.dot}"></span>
             <h3 class="font-bold text-white">${r.name}</h3>
+            ${r.hogsalt ? `<span class="text-[9px] font-bold uppercase tracking-wide text-white bg-cubs-red/80 rounded px-1.5 py-0.5">Hogsalt</span>` : ''}
             <span class="text-xs text-gray-500">${r.neigh}</span>
           </div>
           <div class="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -332,7 +355,7 @@ function pause() {
 function reset() {
   pause();
   cursor = 0;
-  RESTAURANTS.forEach(r => STATE[r.id] = { status: 'idle', detail: '', countdown: '' });
+  freshState();
   document.getElementById('feed').innerHTML = '<div class="text-center text-gray-600 text-sm py-12" id="feedEmpty">Press <span class="text-gray-400 font-medium">Play</span> to start the simulation.</div>';
   document.getElementById('simClock').textContent = 'Tue · 11:55 PM';
   document.getElementById('stepCount').textContent = `0 / ${STEPS.length}`;
@@ -357,6 +380,7 @@ document.getElementById('stepBtn').onclick = () => { pause(); next(); };
 document.getElementById('dropBtn').onclick = skipToDrop;
 document.getElementById('resetBtn').onclick = reset;
 
+document.getElementById('watchCount').textContent = RESTAURANTS.length;
 document.getElementById('stepCount').textContent = `0 / ${STEPS.length}`;
 renderCards();
 </script>
